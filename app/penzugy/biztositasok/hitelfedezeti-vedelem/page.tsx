@@ -5,7 +5,6 @@ import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
-  Banknote,
   Check,
   HeartPulse,
   Home,
