@@ -7,7 +7,7 @@ import AdminSidebar from "../components/layout/AdminSidebar";
 export default function AdminPage() {
 const [images, setImages] = useState<File[]>([]);
 const [mainImageIndex, setMainImageIndex] = useState(0);
-const [uploading, setUploading] = useState(false);
+const [, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [featured, setFeatured] = useState(false);
   const [urgent, setUrgent] = useState(false);

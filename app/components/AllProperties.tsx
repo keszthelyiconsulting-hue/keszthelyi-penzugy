@@ -2,9 +2,22 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabase";
-
+type PropertyRow = {
+  id: number;
+  slug: string;
+  title: string;
+  description: string | null;
+  city: string;
+  listing_type: string;
+  property_type: string;
+  price: number | string | null;
+  area_size: number | string | null;
+  room_count: number | string | null;
+  images: string[] | null;
+  main_image: string | null;
+};
 export default function AllProperties() {
-  const [properties, setProperties] = useState<any[]>([]);
+  const [properties, setProperties] = useState<PropertyRow[]>([]);
 
   useEffect(() => {
     fetchProperties();
