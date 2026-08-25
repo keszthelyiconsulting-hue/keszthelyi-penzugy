@@ -25,23 +25,14 @@ export default function OtthonStartPage() {
   const [isSending, setIsSending] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitError, setSubmitError] = useState(false);
-const handleShare = async () => {
-  const shareData = {
-    title: "Otthon Start – Keszthelyi Consulting",
-    text: "Otthon Start lakáshitel – részletek és igénylési lehetőség.",
-    url: window.location.href,
-  };
+const handleShare = () => {
+  const url = encodeURIComponent(window.location.href);
 
-  try {
-    if (navigator.share) {
-      await navigator.share(shareData);
-    } else {
-      await navigator.clipboard.writeText(window.location.href);
-      alert("A linket a vágólapra másoltuk.");
-    }
-  } catch {
-    // A megosztási ablak bezárása esetén nincs teendő.
-  }
+  window.open(
+    `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+    "_blank",
+    "noopener,noreferrer,width=700,height=600"
+  );
 };
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
