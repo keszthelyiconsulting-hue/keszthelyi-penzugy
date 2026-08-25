@@ -14,6 +14,7 @@ import {
   HeartHandshake,
   Home,
   Landmark,
+  Share2,
   ShieldCheck,
   Sparkles,
   WalletCards,
@@ -24,7 +25,24 @@ export default function OtthonStartPage() {
   const [isSending, setIsSending] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitError, setSubmitError] = useState(false);
+const handleShare = async () => {
+  const shareData = {
+    title: "Otthon Start – Keszthelyi Consulting",
+    text: "Otthon Start lakáshitel – részletek és igénylési lehetőség.",
+    url: window.location.href,
+  };
 
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+    } else {
+      await navigator.clipboard.writeText(window.location.href);
+      alert("A linket a vágólapra másoltuk.");
+    }
+  } catch {
+    // A megosztási ablak bezárása esetén nincs teendő.
+  }
+};
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -574,6 +592,15 @@ export default function OtthonStartPage() {
           szabályaitól és az egyedi hitelbírálattól függenek.
         </div>
       </section>
+   <button
+  type="button"
+  onClick={handleShare}
+  aria-label="Oldal megosztása"
+  title="Megosztás"
+  className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-amber-400/40 bg-black text-amber-200 shadow-xl transition hover:scale-105 hover:bg-amber-950"
+>
+  <Share2 className="h-6 w-6" />
+</button>
     </main>
   );
 }

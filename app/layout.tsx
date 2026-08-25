@@ -1,10 +1,10 @@
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import Footer from "./components/Footer";
+
 export const metadata = {
-  title: "Keszthelyi Ingatlan",
-  description: "Prémium ingatlanközvetítés",
+  title: "Keszthelyi Consulting",
+  description: "Pénzügyi és ingatlan megoldások",
 };
 
 export default function RootLayout({
@@ -14,14 +14,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="hu">
-     <body>
-  {children}
+      <body>
+        {children}
 
-  <Footer />
-
-  <Analytics />
-  <SpeedInsights />
-</body>
+        <Analytics />
+        <SpeedInsights />
+      </body>
     </html>
   );
 }
