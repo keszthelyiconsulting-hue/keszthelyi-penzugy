@@ -1,4 +1,5 @@
 import Footer from "../components/Footer";
+import FacebookShareButton from "../components/FacebookShareButton";
 
 export default function PenzugyLayout({
   children,
@@ -8,7 +9,10 @@ export default function PenzugyLayout({
   return (
     <>
       {children}
+
       <Footer />
+
+      <FacebookShareButton />
     </>
   );
 }
