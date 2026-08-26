@@ -59,7 +59,9 @@ export default function SzemelyiKolcsonPage() {
 
     if (!consent) {
       setSubmitError(true);
-      setSubmitMessage("A kapcsolatfelvételi hozzájárulás elfogadása szükséges.");
+      setSubmitMessage(
+        "A kapcsolatfelvételi hozzájárulás elfogadása szükséges.",
+      );
       return;
     }
 
@@ -78,7 +80,8 @@ export default function SzemelyiKolcsonPage() {
 
       if (!response.ok) {
         throw new Error(
-          result?.error || "A kapcsolatfelvételi igény elküldése nem sikerült.",
+          result?.error ||
+            "A kapcsolatfelvételi igény elküldése nem sikerült.",
         );
       }
 
@@ -129,6 +132,7 @@ export default function SzemelyiKolcsonPage() {
           </div>
 
           <div className="grid items-center gap-12 pb-16 pt-8 lg:grid-cols-[1.15fr_0.85fr] lg:pb-24 lg:pt-16">
+            {/* BAL OLDAL */}
             <div>
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#d6c5aa]/30 bg-[#d6c5aa]/10 px-4 py-2 text-sm font-medium text-[#eadfce]">
                 <WalletCards className="h-4 w-4" />
@@ -142,8 +146,8 @@ export default function SzemelyiKolcsonPage() {
 
               <p className="mt-7 max-w-2xl text-lg leading-8 text-neutral-300 sm:text-xl">
                 Szabadon felhasználható finanszírozás nagyobb tervekhez,
-                váratlan kiadásokhoz vagy meglévő pénzügyi terhek
-                rendezéséhez – ingatlanfedezet nélkül.
+                váratlan kiadásokhoz vagy meglévő pénzügyi terhek rendezéséhez
+                – ingatlanfedezet nélkül.
               </p>
 
               <div className="mt-9 flex flex-wrap gap-4">
@@ -164,34 +168,25 @@ export default function SzemelyiKolcsonPage() {
               </div>
             </div>
 
-            <div className="relative">
-              <div className="rounded-[32px] border border-white/10 bg-white/[0.06] p-6 shadow-2xl backdrop-blur sm:p-8">
-                <div className="mb-7 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#dfd0b8] text-[#171717]">
-                  <Banknote className="h-7 w-7" />
+            {/* SZIPORKA A HERO JOBB OLDALÁN */}
+            <div className="relative min-h-[610px]">
+              <div className="absolute inset-x-8 bottom-0 top-8 rounded-[44px] bg-gradient-to-br from-[#28241f] via-[#181818] to-[#0f0f0f] shadow-2xl shadow-black/40" />
+
+              <img
+                src="/sziporka-szemelyi-kolcson.png"
+                alt="Sziporka, a Keszthelyi Consulting pénzügyi asszisztense"
+                className="absolute inset-0 h-full w-full object-contain object-bottom"
+              />
+
+              <div className="absolute -bottom-4 left-2 right-2 rounded-[28px] border border-white/10 bg-[#171717]/70 px-7 py-5 shadow-2xl backdrop-blur-xl">
+                <div className="mb-2 flex items-center gap-2 text-sm text-[#eadfce]">
+                  <Sparkles className="h-4 w-4" />
+                  Sziporka segít
                 </div>
 
-                <h2 className="text-2xl font-semibold">
-                  Nem egyetlen bank ajánlatából indulunk ki.
-                </h2>
-
-                <p className="mt-4 leading-7 text-neutral-300">
-                  A cél nem egyszerűen egy hitel megtalálása, hanem az, hogy
-                  az élethelyzetedhez, jövedelmedhez és terveidhez illeszkedő
-                  finanszírozási megoldást válasszuk ki.
+                <p className="max-w-[440px] text-[22px] font-semibold leading-[1.18] text-white">
+                  Nézzük meg, milyen lehetőség illik hozzád.
                 </p>
-
-                <div className="mt-7 space-y-4">
-                  {[
-                    "Több bank lehetőségeinek összevetése",
-                    "Személyes pénzügyi helyzet figyelembevétele",
-                    "Érthető segítség a teljes folyamat során",
-                  ].map((item) => (
-                    <div key={item} className="flex gap-3">
-                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#dfd0b8]" />
-                      <span className="text-neutral-200">{item}</span>
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
           </div>
@@ -260,8 +255,8 @@ export default function SzemelyiKolcsonPage() {
             <p className="mt-6 text-lg leading-8 text-neutral-600">
               A személyi kölcsön gyorsabb és egyszerűbb finanszírozási forma
               lehet, mint egy ingatlanfedezetet igénylő hitel. A tényleges
-              lehetőségeket azonban mindig az egyedi pénzügyi helyzet
-              határozza meg.
+              lehetőségeket azonban mindig az egyedi pénzügyi helyzet határozza
+              meg.
             </p>
           </div>
 
@@ -391,8 +386,8 @@ export default function SzemelyiKolcsonPage() {
 
               <p className="leading-7 text-neutral-600">
                 Az oldalon ezért szándékosan nem jelenítünk meg egyetlen,
-                mindenkire érvényes kamatot vagy havi törlesztőrészletet.
-                A konkrét lehetőségeket az aktuális banki feltételek és a
+                mindenkire érvényes kamatot vagy havi törlesztőrészletet. A
+                konkrét lehetőségeket az aktuális banki feltételek és a
                 személyes adatok alapján lehet meghatározni.
               </p>
             </div>
@@ -400,7 +395,7 @@ export default function SzemelyiKolcsonPage() {
         </div>
       </section>
 
-      {/* SZIPORKA / KAPCSOLAT */}
+      {/* KAPCSOLAT */}
       <section
         id="kapcsolat"
         className="relative overflow-hidden bg-[#d9c7aa] px-6 py-20 lg:px-8 lg:py-28"
@@ -410,39 +405,41 @@ export default function SzemelyiKolcsonPage() {
         <div className="relative mx-auto max-w-7xl">
           <div className="overflow-hidden rounded-[36px] bg-[#171717] shadow-2xl">
             <div className="grid lg:grid-cols-[0.9fr_1.1fr]">
-              {/* Sziporka */}
-              <div className="relative min-h-[560px] overflow-hidden bg-gradient-to-br from-[#28241f] via-[#181818] to-[#0f0f0f]">
-                <img
-                  src="/sziporka-szemelyi-kolcson.png"
-                  alt="Sziporka, a Keszthelyi Consulting pénzügyi asszisztense"
-                  className="absolute inset-0 h-full w-full object-cover object-top"
-                />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-
-                <div className="absolute inset-x-0 bottom-0 z-10 p-8 sm:p-10">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/30 px-4 py-2 text-sm text-[#eadfce] backdrop-blur-sm">
-                    <Sparkles className="h-4 w-4" />
-                    Sziporka segít
+              {/* INFORMÁCIÓS BLOKK */}
+              <div className="relative flex min-h-[560px] items-center bg-gradient-to-br from-[#28241f] via-[#181818] to-[#0f0f0f] p-8 text-white sm:p-10 lg:p-12">
+                <div className="w-full">
+                  <div className="mb-7 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#dfd0b8] text-[#171717]">
+                    <Banknote className="h-7 w-7" />
                   </div>
 
-                  <h2 className="mt-5 max-w-md text-3xl font-semibold leading-tight text-white sm:text-4xl">
-                    Nézzük meg, milyen lehetőség illik hozzád.
+                  <h2 className="max-w-md text-3xl font-semibold leading-tight sm:text-4xl">
+                    Nem egyetlen bank ajánlatából indulunk ki.
                   </h2>
 
-                  <p className="mt-4 max-w-md leading-7 text-neutral-200">
-                    Néhány alapadat alapján el tudjuk indítani a személyes
-                    egyeztetést, és megkeresni a számodra szóba jöhető
-                    finanszírozási lehetőségeket.
+                  <p className="mt-5 max-w-lg leading-7 text-neutral-300">
+                    A cél nem egyszerűen egy hitel megtalálása, hanem az, hogy
+                    az élethelyzetedhez, jövedelmedhez és terveidhez illeszkedő
+                    finanszírozási megoldást válasszuk ki.
                   </p>
+
+                  <div className="mt-8 space-y-5">
+                    {[
+                      "Több bank lehetőségeinek összevetése",
+                      "Személyes pénzügyi helyzet figyelembevétele",
+                      "Érthető segítség a teljes folyamat során",
+                    ].map((item) => (
+                      <div key={item} className="flex gap-3">
+                        <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#dfd0b8]" />
+                        <span className="text-neutral-200">{item}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              {/* Űrlap */}
+              {/* ŰRLAP */}
               <div className="bg-[#f8f4ed] p-8 sm:p-10 lg:p-12">
-                <h3 className="text-2xl font-semibold">
-                  Kapcsolatfelvétel
-                </h3>
+                <h3 className="text-2xl font-semibold">Kapcsolatfelvétel</h3>
 
                 <p className="mt-2 text-neutral-600">
                   Add meg az alapadatokat, és felvesszük veled a kapcsolatot.

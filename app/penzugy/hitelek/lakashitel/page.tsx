@@ -163,34 +163,28 @@ export default function LakáshitelPage() {
               </div>
             </div>
 
-            <div className="relative">
-              <div className="rounded-[32px] border border-white/10 bg-[#312d28] p-6 shadow-2xl sm:p-8">
-                <div className="mb-7 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#dfd0b8] text-[#171717]">
-                  <Banknote className="h-7 w-7" />
-                </div>
+            <div className="relative min-h-[560px] overflow-hidden rounded-[32px] bg-gradient-to-br from-[#dfe8dc] via-[#eef2e8] to-[#d6dfd2] shadow-2xl">
+              <img
+                src="/sziporka-lakashitel.png"
+                alt="Sziporka, a Keszthelyi Consulting pénzügyi asszisztense"
+                className="absolute inset-0 h-full w-full object-contain object-bottom"
+              />
 
-                <h2 className="text-2xl font-semibold">
-                  Nem csak a kamat számít.
-                </h2>
+              <div className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-[#182019]/90 via-[#182019]/55 to-transparent" />
 
-                <p className="mt-4 leading-7 text-neutral-300">
-                  A cél nem egyszerűen egy hitel megtalálása, hanem az, hogy
-                  az élethelyzetedhez, jövedelmedhez és terveidhez illeszkedő
-                  finanszírozási megoldást válasszuk ki.
-                </p>
+              <div className="absolute inset-x-0 bottom-0 z-10 p-8 sm:p-10">
+                <div className="mt-5 max-w-md rounded-[24px] border border-white/15 bg-black/35 px-6 py-5 shadow-xl backdrop-blur-md">
+  <div className="mb-3 flex items-center gap-2 text-sm text-white/80">
+    <Sparkles className="h-4 w-4" />
+    <span>Sziporka segít</span>
+  </div>
 
-                <div className="mt-7 space-y-4">
-                  {[
-                    "Több bank lakáshitel-ajánlatainak összevetése",
-                    "Önerő és jövedelmi helyzet figyelembevétele",
-                    "Segítség az ingatlan és a dokumentumok oldaláról is",
-                  ].map((item) => (
-                    <div key={item} className="flex gap-3">
-                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#dfd0b8]" />
-                      <span className="text-neutral-200">{item}</span>
-                    </div>
-                  ))}
-                </div>
+  <h2 className="text-2xl font-semibold leading-snug text-white">
+    Nézzük meg, milyen otthonteremtési lehetőség illik hozzád.
+  </h2>
+</div>
+
+
               </div>
             </div>
           </div>
@@ -409,31 +403,45 @@ export default function LakáshitelPage() {
         <div className="relative mx-auto max-w-7xl">
           <div className="overflow-hidden rounded-[36px] bg-[#171717] shadow-2xl">
             <div className="grid lg:grid-cols-[0.9fr_1.1fr]">
-              {/* Sziporka */}
-              <div className="relative min-h-[560px] overflow-hidden bg-gradient-to-br from-[#dfe8dc] via-[#eef2e8] to-[#d6dfd2]">
-                <img
-                  src="/sziporka-lakashitel.png"
-                  alt="Sziporka, a Keszthelyi Consulting pénzügyi asszisztense"
-                  className="absolute inset-0 h-full w-full object-contain object-bottom"
-                />
-
-                <div className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-[#182019]/90 via-[#182019]/55 to-transparent" />
-
-                <div className="absolute inset-x-0 bottom-0 z-10 p-8 sm:p-10">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/20 px-4 py-2 text-sm text-white backdrop-blur-sm">
-                    <Sparkles className="h-4 w-4" />
-                    Sziporka segít
+              {/* Lakáshitel információ */}
+              <div className="relative min-h-[560px] overflow-hidden bg-gradient-to-br from-[#dfe8dc] via-[#eef2e8] to-[#d6dfd2] p-8 sm:p-10 lg:p-12">
+                <div className="flex h-full flex-col justify-center">
+                  <div className="mb-7 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#dfd0b8] text-[#171717]">
+                    <Banknote className="h-7 w-7" />
                   </div>
 
-                  <h2 className="mt-5 max-w-md text-3xl font-semibold leading-tight text-white sm:text-4xl">
-                    Nézzük meg, milyen otthonteremtési lehetőség illik hozzád.
+                  <h2 className="text-3xl font-semibold leading-tight">
+                    Nézzük meg, milyen lehetőség illik hozzád.
                   </h2>
 
-                  <p className="mt-4 max-w-md leading-7 text-white/85">
+                  <p className="mt-4 max-w-md leading-7 text-neutral-600">
                     Néhány alapadat alapján el tudjuk indítani a személyes
                     egyeztetést, és megkeresni a számodra megfelelő lakáshitel
                     lehetőségeket.
                   </p>
+
+                  <h2 className="mt-8 text-2xl font-semibold">
+                    Nem csak a kamat számít.
+                  </h2>
+
+                  <p className="mt-4 max-w-md leading-7 text-neutral-600">
+                    A cél nem egyszerűen egy hitel megtalálása, hanem az, hogy
+                    az élethelyzetedhez, jövedelmedhez és terveidhez illeszkedő
+                    finanszírozási megoldást válasszuk ki.
+                  </p>
+
+                  <div className="mt-7 space-y-4">
+                    {[
+                      "Több bank lakáshitel-ajánlatainak összevetése",
+                      "Önerő és jövedelmi helyzet figyelembevétele",
+                      "Segítség az ingatlan és a dokumentumok oldaláról is",
+                    ].map((item) => (
+                      <div key={item} className="flex gap-3">
+                        <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#8a7356]" />
+                        <span className="text-neutral-700">{item}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 

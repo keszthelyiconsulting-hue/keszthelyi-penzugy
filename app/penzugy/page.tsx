@@ -20,6 +20,7 @@ const movingTopics = [
   "Megtakarítás",
   "Nyugdíj",
   "Vállalkozások",
+  "Családfővédelem",
   "KKV Hitel",
   "KKV Betét",
 ];
@@ -124,9 +125,40 @@ const insurances: ProductCard[] = [
     description:
       "Váratlan helyzetekben segítséget adhat a hitelterhek kezeléséhez.",
     href: "/penzugy/biztositasok/hitelfedezeti-vedelem",
-    image: "/finance-card-hitel-fedezeti-vedelem.png",
+    image: "/finance-card-hitelfedezeti-vedelem.png",
   },
-
+  {
+    title: "Családfővédelem",
+    subtitle: "Biztonság azoknak, akik számítanak rád.",
+    description:
+      "Anyagi védelem a család számára váratlan élethelyzetek esetére.",
+    href: "/penzugy/biztositasok/csaladfo-vedelem",
+    image: "/finance-card-csaladfo-vedelem.png",
+  },
+  {
+    title: "Gyermekbiztosítás",
+    subtitle: "Védelem a gyermekkor váratlan helyzeteire.",
+    description:
+      "Biztosítási védelem baleset, betegség és kórházi ellátás esetére.",
+    href: "/penzugy/biztositasok/gyermekbiztositas",
+    image: "/finance-card-gyermekbiztositas.png",
+  },
+  {
+    title: "Gyors segítség",
+    subtitle: "Diagnosztika és egynapos műtéti térítés.",
+    description:
+      "Nagyértékű diagnosztikai vizsgálatok és egynapos műtéti térítés egy megoldásban.",
+    href: "/penzugy/biztositasok/gyors-segitseg",
+    image: "/finance-card-gyors-segitseg.png",
+  },
+  {
+    title: "Kritikus betegségek",
+    subtitle: "Anyagi segítség egy komoly diagnózis után.",
+    description:
+      "Személyre szabható védelem súlyos betegségek és egészségi állapotok esetére.",
+    href: "/penzugy/biztositasok/kritikus-betegsegek",
+    image: "/finance-card-kritikus-betegsegek.png",
+  },
 ];
 
 const savings: ProductCard[] = [
