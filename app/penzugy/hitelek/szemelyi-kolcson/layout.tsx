@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   description:
     "Személyi kölcsön több bank ajánlatának összehasonlításával. Ismerd meg a lehetőségeket, feltételeket és találd meg a számodra megfelelő finanszírozást.",
 
+  alternates: {
+    canonical:
+      "https://www.keszthelyiconsulting.com/penzugy/hitelek/szemelyi-kolcson",
+  },
+
   openGraph: {
     title: "Személyi kölcsön – Keszthelyi Consulting",
     description:
@@ -13,9 +18,13 @@ export const metadata: Metadata = {
     siteName: "Keszthelyi Consulting",
     type: "website",
     locale: "hu_HU",
+
     images: [
       {
-        url: "/finance-card-szemelyi-kolcson.png",
+        url: "https://www.keszthelyiconsulting.com/finance-card-szemelyi-kolcson.png",
+        width: 1536,
+        height: 1024,
+        type: "image/png",
         alt: "Személyi kölcsön – Keszthelyi Consulting",
       },
     ],
