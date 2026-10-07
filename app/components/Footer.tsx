@@ -132,6 +132,13 @@ export default function Footer() {
               >
                 Kapcsolat
               </a>
+
+              <a
+                href="/konyvek"
+                className="block transition hover:text-amber-200"
+              >
+                Könyvek
+              </a>
             </div>
           </div>
 
