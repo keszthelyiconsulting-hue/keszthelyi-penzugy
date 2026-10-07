@@ -476,7 +476,7 @@ export default function PenzugyHomePage() {
             />
           </Link>
 
-          <nav className="hidden items-center gap-6 lg:flex">
+          <nav className="hidden flex-wrap items-center justify-end gap-x-5 gap-y-3 pl-6 lg:flex">
             <Link href="#hitelek" className="text-[18px] font-medium tracking-[0.02em] text-[#d8c3a0] transition hover:text-[#f1e6d3]">
               Hitelek
             </Link>
@@ -494,6 +494,9 @@ export default function PenzugyHomePage() {
             </Link>
             <Link href="/penzugy/kalkulatorok" className="text-[18px] font-medium tracking-[0.02em] text-[#d8c3a0] transition hover:text-[#f1e6d3]">
               Kalkulátorok
+            </Link>
+            <Link href="/konyvek" className="text-[18px] font-medium tracking-[0.02em] text-[#d8c3a0] transition hover:text-[#f1e6d3]">
+              Könyvek
             </Link>
             <Link href="/penzugy/kapcsolat" className="text-[18px] font-medium tracking-[0.02em] text-[#d8c3a0] transition hover:text-[#f1e6d3]">
               Kapcsolat
