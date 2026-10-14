@@ -23,16 +23,16 @@ export default function EzustevekPage() {
           }}
         >
           <div style={{ marginBottom: "36px" }}>
-            <p
-              style={{
-                margin: 0,
-                color: "#9a6b2f",
-                fontSize: "18px",
-                fontWeight: 600,
-              }}
-            >
-              Ezüstévek
-            </p>
+           <img
+  src="/ezustevek/ezustevek-logo.png"
+  alt="Ezüstévek"
+  style={{
+    width: "260px",
+    maxWidth: "100%",
+    height: "auto",
+    marginBottom: "8px",
+  }}
+/>
 
             <h1
               style={{
@@ -215,8 +215,8 @@ export default function EzustevekPage() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-                gap: "24px",
+                gridTemplateColumns: "repeat(auto-fill, 180px)",
+justifyContent: "start",
               }}
             >
               <a
@@ -238,11 +238,13 @@ export default function EzustevekPage() {
                   <img
                     src="/ezustevek/2026-november-borito.png"
                     alt="Ezüstévek 2026. november"
-                    style={{
-                      width: "100%",
-                      borderRadius: "10px",
-                      marginBottom: "12px",
-                    }}
+                   style={{
+  width: "160px",
+  height: "auto",
+  borderRadius: "10px",
+  marginBottom: "10px",
+  display: "block",
+}}
                   />
 
                   <strong>2026. november</strong>
