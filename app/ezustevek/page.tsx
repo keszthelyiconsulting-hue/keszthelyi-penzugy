@@ -12,9 +12,14 @@ function MagazineReader() {
 
   const [pdfReady, setPdfReady] = useState(false);
   const [flipReady, setFlipReady] = useState(false);
+
   const [pages, setPages] = useState<string[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
+
   const [loading, setLoading] = useState(true);
+  const [loadingText, setLoadingText] = useState(
+    "A magazin előkészítése…"
+  );
 
   useEffect(() => {
     if (!pdfReady) return;
@@ -36,31 +41,54 @@ function MagazineReader() {
 
         const generatedPages: string[] = [];
 
-        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+        for (
+          let pageNumber = 1;
+          pageNumber <= pdf.numPages;
+          pageNumber++
+        ) {
+          if (cancelled) return;
+
+          setLoadingText(
+            `A magazin előkészítése… ${pageNumber}/${pdf.numPages}`
+          );
+
           const page = await pdf.getPage(pageNumber);
 
+          /*
+            Nagyobb renderelési méret:
+            ettől lesz sokkal tisztább a szöveg.
+          */
           const viewport = page.getViewport({
-            scale: 1.55,
+            scale: 2.5,
           });
 
           const canvas = document.createElement("canvas");
-          const context = canvas.getContext("2d");
+
+          const context = canvas.getContext("2d", {
+            alpha: false,
+          });
 
           if (!context) continue;
 
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
+          canvas.width = Math.floor(viewport.width);
+          canvas.height = Math.floor(viewport.height);
+
+          context.imageSmoothingEnabled = true;
+          context.imageSmoothingQuality = "high";
 
           await page.render({
             canvasContext: context,
             viewport,
+            background: "#ffffff",
           }).promise;
 
+          /*
+            PNG, nem JPEG.
+            A betűk és vékony vonalak így sokkal élesebbek.
+          */
           generatedPages.push(
-            canvas.toDataURL("image/jpeg", 0.93)
+            canvas.toDataURL("image/png")
           );
-
-          if (cancelled) return;
         }
 
         if (!cancelled) {
@@ -69,6 +97,12 @@ function MagazineReader() {
         }
       } catch (error) {
         console.error(error);
+
+        if (!cancelled) {
+          setLoadingText(
+            "A magazin betöltése nem sikerült."
+          );
+        }
       }
     }
 
@@ -80,7 +114,13 @@ function MagazineReader() {
   }, [pdfReady]);
 
   useEffect(() => {
-    if (!flipReady || pages.length === 0 || !bookRef.current) return;
+    if (
+      !flipReady ||
+      pages.length === 0 ||
+      !bookRef.current
+    ) {
+      return;
+    }
 
     const St = (window as any).St;
 
@@ -92,39 +132,53 @@ function MagazineReader() {
       } catch {}
     }
 
-    const pageFlip = new St.PageFlip(bookRef.current, {
-      width: 420,
-      height: 594,
+    const pageFlip = new St.PageFlip(
+      bookRef.current,
+      {
+        /*
+          Egyetlen oldal mérete.
+          Asztali nézetben ebből kettő lesz egymás mellett.
+        */
+        width: 335,
+        height: 474,
 
-      size: "stretch",
+        size: "stretch",
 
-      minWidth: 280,
-      maxWidth: 520,
+        minWidth: 260,
+        maxWidth: 390,
 
-      minHeight: 396,
-      maxHeight: 735,
+        minHeight: 368,
+        maxHeight: 552,
 
-      maxShadowOpacity: 0.45,
+        /*
+          FONTOS:
+          false = asztali nézetben kétoldalas magazin.
+        */
+        usePortrait: false,
 
-      showCover: true,
+        /*
+          Borító külön jelenik meg.
+        */
+        showCover: true,
 
-      mobileScrollSupport: false,
+        autoSize: true,
 
-      usePortrait: true,
+        drawShadow: true,
 
-      flippingTime: 900,
+        maxShadowOpacity: 0.45,
 
-      drawShadow: true,
+        flippingTime: 950,
 
-      autoSize: true,
+        mobileScrollSupport: false,
 
-      startPage: 0,
-    });
+        startPage: 0,
+      }
+    );
 
     pageFlip.loadFromImages(pages);
 
     pageFlip.on("flip", (event: any) => {
-      setCurrentPage(event.data + 1);
+      setCurrentPage(event.data);
     });
 
     pageFlipRef.current = pageFlip;
@@ -144,6 +198,12 @@ function MagazineReader() {
     pageFlipRef.current?.flipNext();
   }
 
+  const firstPage = currentPage <= 0;
+
+  const lastPage =
+    pages.length > 0 &&
+    currentPage >= pages.length - 1;
+
   return (
     <>
       <Script
@@ -160,45 +220,89 @@ function MagazineReader() {
 
       <div className="w-full">
 
-        <div className="mb-5 flex items-center justify-between gap-3">
+        {/* LAPOZHATÓ MAGAZIN */}
 
-          <button
-            type="button"
-            onClick={previousPage}
-            disabled={currentPage <= 1}
-            className="rounded-full border border-[#c9b38f] px-5 py-2 text-[14px] font-semibold text-[#173b35] transition hover:bg-[#efe4d4] disabled:opacity-30"
-          >
-            ← Előző
-          </button>
-
-          <div className="text-center">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#9d6a31]">
-              Lapozható magazin
-            </p>
-
-            <p className="mt-1 text-[14px] text-[#62574b]">
-              {currentPage} / {pages.length || "–"}
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={nextPage}
-            disabled={!pages.length || currentPage >= pages.length}
-            className="rounded-full bg-[#173b35] px-5 py-2 text-[14px] font-semibold text-white transition hover:bg-[#102d29] disabled:opacity-30"
-          >
-            Következő →
-          </button>
-
-        </div>
-
-        <div className="relative flex min-h-[690px] items-center justify-center overflow-hidden rounded-[24px] bg-[#ddd4c8] p-5 shadow-[0_25px_65px_rgba(0,0,0,0.20)]">
+        <div className="relative mx-auto flex min-h-[610px] items-center justify-center overflow-visible rounded-[24px] bg-[#e5ddd2] px-9 py-6 shadow-[0_24px_65px_rgba(0,0,0,0.18)]">
 
           {loading && (
-            <div className="absolute inset-0 z-20 flex items-center justify-center bg-[#ddd4c8] text-[#665b4f]">
-              A magazin előkészítése…
+            <div className="absolute inset-0 z-40 flex items-center justify-center rounded-[24px] bg-[#e5ddd2] px-8 text-center text-[15px] font-medium text-[#665b4f]">
+              {loadingText}
             </div>
           )}
+
+          {/* BAL NYÍL */}
+
+          {!firstPage && !loading && (
+            <button
+              type="button"
+              onClick={previousPage}
+              aria-label="Előző oldal"
+              className="
+                absolute
+                left-2
+                top-1/2
+                z-30
+                flex
+                h-10
+                w-10
+                -translate-y-1/2
+                items-center
+                justify-center
+                rounded-full
+                border
+                border-[#c4ae8b]
+                bg-[#fffaf2]/95
+                text-[30px]
+                font-light
+                leading-none
+                text-[#173b35]
+                shadow-md
+                transition
+                hover:scale-110
+                hover:bg-white
+              "
+            >
+              ‹
+            </button>
+          )}
+
+          {/* JOBB NYÍL */}
+
+          {!lastPage && !loading && (
+            <button
+              type="button"
+              onClick={nextPage}
+              aria-label="Következő oldal"
+              className="
+                absolute
+                right-2
+                top-1/2
+                z-30
+                flex
+                h-10
+                w-10
+                -translate-y-1/2
+                items-center
+                justify-center
+                rounded-full
+                border
+                border-[#c4ae8b]
+                bg-[#173b35]
+                text-[30px]
+                font-light
+                leading-none
+                text-white
+                shadow-md
+                transition
+                hover:scale-110
+                hover:bg-[#102e2a]
+              "
+            >
+              ›
+            </button>
+          )}
+
+          {/* MAGAZIN */}
 
           <div
             ref={bookRef}
@@ -207,19 +311,33 @@ function MagazineReader() {
 
         </div>
 
-        <p className="mt-4 text-center text-[13px] leading-6 text-[#766b5f]">
-          Kattints vagy húzd az oldal szélét a lapozáshoz.
-        </p>
+        {/* ALSÓ INFORMÁCIÓ */}
 
-        <div className="mt-2 text-center">
+        <div className="mt-4 flex flex-col items-center gap-1">
+
+          <p className="text-[13px] font-semibold text-[#8d6739]">
+            Lapozható magazin
+          </p>
+
+          <p className="text-[12px] text-[#766b5f]">
+            {pages.length
+              ? `${currentPage + 1} / ${pages.length}`
+              : ""}
+          </p>
+
+          <p className="mt-1 text-[12px] text-[#8c8176]">
+            A lap szélét megfogva is lapozható.
+          </p>
+
           <a
             href="/ezustevek/2026-november.pdf"
             target="_blank"
             rel="noreferrer"
-            className="text-[13px] text-[#82613c] underline underline-offset-4 hover:text-[#173b35]"
+            className="mt-2 text-[12px] text-[#82613c] underline underline-offset-4 hover:text-[#173b35]"
           >
             PDF megnyitása külön lapon
           </a>
+
         </div>
 
       </div>
@@ -246,17 +364,26 @@ export default function EzustevekPage() {
               style={{
                 fontFamily:
                   '"Palatino Linotype", Palatino, "Book Antiqua", Garamond, Georgia, serif',
-                fontSize: "clamp(48px, 5.5vw, 72px)",
+                fontSize:
+                  "clamp(48px, 5.5vw, 72px)",
                 fontStyle: "italic",
                 fontWeight: 700,
                 letterSpacing: "-0.055em",
               }}
             >
-              <span style={{ color: "#2f7568" }}>
+              <span
+                style={{
+                  color: "#2f7568",
+                }}
+              >
                 Ezüst
               </span>
 
-              <span style={{ color: "#d28a3a" }}>
+              <span
+                style={{
+                  color: "#d28a3a",
+                }}
+              >
                 évek
               </span>
             </h1>
@@ -267,13 +394,13 @@ export default function EzustevekPage() {
 
       {/* MAGAZIN + SZIPORKA */}
 
-      <section className="mx-auto max-w-[1280px] px-5 py-10 md:px-8 lg:py-14">
+      <section className="mx-auto max-w-[1380px] px-5 py-10 md:px-8 lg:py-14">
 
-        <div className="grid items-start gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
+        <div className="grid items-start gap-10 lg:grid-cols-[1.35fr_0.65fr] lg:gap-12">
 
-          {/* BAL OLDAL - VALÓDI LAPOZHATÓ MAGAZIN */}
+          {/* BAL OLDAL - LAPOZHATÓ MAGAZIN */}
 
-          <div>
+          <div className="min-w-0">
             <MagazineReader />
           </div>
 
@@ -287,7 +414,7 @@ export default function EzustevekPage() {
               width={820}
               height={1100}
               priority
-              className="h-auto w-full max-w-[540px] object-contain"
+              className="h-auto w-full max-w-[430px] object-contain"
             />
 
           </div>
@@ -304,11 +431,15 @@ export default function EzustevekPage() {
 
           <span>•</span>
 
-          <span>2026. november</span>
+          <span>
+            2026. november
+          </span>
 
           <span>•</span>
 
-          <span>1. évfolyam • 1. szám</span>
+          <span>
+            1. évfolyam • 1. szám
+          </span>
 
         </div>
 
@@ -323,7 +454,8 @@ export default function EzustevekPage() {
           <h2
             className="mt-2 text-[32px] font-normal text-[#173b35]"
             style={{
-              fontFamily: 'Georgia, "Times New Roman", serif',
+              fontFamily:
+                'Georgia, "Times New Roman", serif',
             }}
           >
             Lapszámok
