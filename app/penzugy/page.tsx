@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-
+import Footer from "../components/Footer";
 const movingTopics = [
   "Személyi kölcsön",
   "Folyószámla",
@@ -498,6 +498,9 @@ export default function PenzugyHomePage() {
             <Link href="/konyvek" className="text-[18px] font-medium tracking-[0.02em] text-[#d8c3a0] transition hover:text-[#f1e6d3]">
               Könyvek
             </Link>
+            <Link href="/ezustevek" className="text-[18px] font-medium tracking-[0.02em] text-[#d8c3a0] transition hover:text-[#f1e6d3]">
+  Ezüstévek
+</Link>
             <Link href="/penzugy/kapcsolat" className="text-[18px] font-medium tracking-[0.02em] text-[#d8c3a0] transition hover:text-[#f1e6d3]">
               Kapcsolat
             </Link>
@@ -678,6 +681,7 @@ export default function PenzugyHomePage() {
         title="Megoldások vállalkozások számára"
         cards={businesses}
       />
+      <Footer />
     </main>
   );
 }
