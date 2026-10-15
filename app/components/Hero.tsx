@@ -48,7 +48,6 @@ export default function Hero() {
       <div className="absolute inset-0 bg-black/35"></div>
 
       <header className="relative z-20 flex items-center justify-between px-12 py-8 border-b border-white/10">
-
         <nav className="hidden lg:flex items-center gap-10 text-sm tracking-[2px] text-white uppercase">
           <Link
             href="/"
@@ -90,6 +89,13 @@ export default function Hero() {
             </Link>
 
             <Link
+              href="/ezustevek"
+              className="hover:text-[#C2A56A] font-semibold transition"
+            >
+              Ezüstévek
+            </Link>
+
+            <Link
               href="/kapcsolat"
               className="hover:text-[#C2A56A] font-semibold transition"
             >
@@ -107,7 +113,6 @@ export default function Hero() {
       </header>
 
       <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 pt-32 pb-4">
-
         <h1
           className="
             text-white
@@ -127,7 +132,6 @@ export default function Hero() {
         <p className="mt-8 text-xl text-gray-300 max-w-3xl leading-relaxed">
           {heroSubtitle}
         </p>
-
       </div>
     </section>
   );
