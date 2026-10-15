@@ -1,10 +1,177 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import Script from "next/script";
+import { useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
+
+function MagazineReader() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const pdfRef = useRef<any>(null);
+  const renderTaskRef = useRef<any>(null);
+
+  const [ready, setReady] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageCount, setPageCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  async function loadPdf() {
+    const pdfjsLib = (window as any).pdfjsLib;
+
+    if (!pdfjsLib) return;
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+    const pdf = await pdfjsLib
+      .getDocument("/ezustevek/2026-november.pdf")
+      .promise;
+
+    pdfRef.current = pdf;
+    setPageCount(pdf.numPages);
+    setReady(true);
+  }
+
+  useEffect(() => {
+    if (!ready || !pdfRef.current || !canvasRef.current) return;
+
+    let cancelled = false;
+
+    async function renderPage() {
+      setLoading(true);
+
+      try {
+        if (renderTaskRef.current) {
+          try {
+            renderTaskRef.current.cancel();
+          } catch {}
+        }
+
+        const page = await pdfRef.current.getPage(pageNumber);
+
+        const baseViewport = page.getViewport({ scale: 1 });
+
+        const maxWidth = 540;
+        const scale = maxWidth / baseViewport.width;
+
+        const viewport = page.getViewport({ scale });
+
+        const canvas = canvasRef.current;
+
+        if (!canvas || cancelled) return;
+
+        const context = canvas.getContext("2d");
+
+        if (!context) return;
+
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        const task = page.render({
+          canvasContext: context,
+          viewport,
+        });
+
+        renderTaskRef.current = task;
+
+        await task.promise;
+      } catch (error: any) {
+        if (error?.name !== "RenderingCancelledException") {
+          console.error(error);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    renderPage();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [ready, pageNumber]);
+
+  return (
+    <>
+      <Script
+        src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
+        strategy="afterInteractive"
+        onLoad={loadPdf}
+      />
+
+      <div className="w-full">
+        <div className="mb-4 flex items-center justify-between gap-3">
+
+          <button
+            type="button"
+            onClick={() =>
+              setPageNumber((page) => Math.max(1, page - 1))
+            }
+            disabled={pageNumber === 1}
+            className="rounded-full border border-[#c9b38f] px-5 py-2 text-[14px] font-semibold text-[#173b35] transition hover:bg-[#efe4d4] disabled:cursor-default disabled:opacity-30"
+          >
+            ← Előző
+          </button>
+
+          <div className="text-center">
+            <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#9d6a31]">
+              Lapozható magazin
+            </p>
+
+            <p className="mt-1 text-[14px] text-[#62574b]">
+              {pageNumber} / {pageCount || "–"}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() =>
+              setPageNumber((page) =>
+                Math.min(pageCount || page, page + 1)
+              )
+            }
+            disabled={!pageCount || pageNumber === pageCount}
+            className="rounded-full bg-[#173b35] px-5 py-2 text-[14px] font-semibold text-white transition hover:bg-[#102d29] disabled:cursor-default disabled:opacity-30"
+          >
+            Következő →
+          </button>
+
+        </div>
+
+        <div className="relative mx-auto flex min-h-[650px] items-center justify-center rounded-[22px] bg-[#ded5c9] p-4 shadow-[0_24px_60px_rgba(0,0,0,0.18)]">
+
+          {loading && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[22px] bg-[#ded5c9]/80 text-[#665b4f]">
+              Magazin betöltése…
+            </div>
+          )}
+
+          <canvas
+            ref={canvasRef}
+            className="block h-auto max-h-[76vh] max-w-full bg-white shadow-[0_8px_28px_rgba(0,0,0,0.18)]"
+          />
+
+        </div>
+
+        <div className="mt-4 text-center">
+          <a
+            href="/ezustevek/2026-november.pdf"
+            target="_blank"
+            rel="noreferrer"
+            className="text-[13px] text-[#82613c] underline underline-offset-4 hover:text-[#173b35]"
+          >
+            PDF megnyitása külön lapon
+          </a>
+        </div>
+      </div>
+    </>
+  );
+}
 
 export default function EzustevekPage() {
   return (
-    <main className="min-h-screen bg-[#f6f1e9] text-[#24312e]">
+    <main className="min-h-screen bg-[#f7f2eb] text-[#24312e]">
 
       {/* KESZTHELYI CONSULTING FEJLÉC */}
 
@@ -30,49 +197,49 @@ export default function EzustevekPage() {
 
             <Link
               href="/penzugy#hitelek"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-[#f1e6d3]"
+              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
             >
               Hitelek
             </Link>
 
             <Link
               href="/penzugy#biztositasok"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-[#f1e6d3]"
+              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
             >
               Biztosítások
             </Link>
 
             <Link
               href="/penzugy#megtakaritasok"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-[#f1e6d3]"
+              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
             >
               Megtakarítások
             </Link>
 
             <Link
               href="/penzugy#szamlatermekek"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-[#f1e6d3]"
+              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
             >
               Számlatermékek
             </Link>
 
             <Link
               href="/penzugy#vallalkozasok"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-[#f1e6d3]"
+              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
             >
               Vállalkozások
             </Link>
 
             <Link
               href="/penzugy/kalkulatorok"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-[#f1e6d3]"
+              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
             >
               Kalkulátorok
             </Link>
 
             <Link
               href="/konyvek"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-[#f1e6d3]"
+              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
             >
               Könyvek
             </Link>
@@ -86,14 +253,14 @@ export default function EzustevekPage() {
 
             <Link
               href="/penzugy/kapcsolat"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-[#f1e6d3]"
+              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
             >
               Kapcsolat
             </Link>
 
             <Link
               href="/penzugy/adatkezeles"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-[#f1e6d3]"
+              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
             >
               Adatkezelés
             </Link>
@@ -102,127 +269,54 @@ export default function EzustevekPage() {
         </div>
       </header>
 
-      {/* EZÜSTÉVEK FEJLÉC */}
+      {/* MAGAZIN + SZIPORKA */}
 
-      <section className="border-b border-[#ded1c1] bg-[#fffaf4]">
-        <div className="mx-auto max-w-[1180px] px-7 py-12 md:px-10">
+      <section className="mx-auto max-w-[1280px] px-5 py-10 md:px-8 lg:py-14">
 
-          <p className="text-[12px] font-semibold uppercase tracking-[0.22em] text-[#a87330]">
-            Online magazin
-          </p>
+        <div className="grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
 
-          <h1
-            className="mt-3 text-[52px] font-semibold leading-none text-[#173b35] md:text-[64px]"
-            style={{
-              fontFamily:
-                '"Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif',
-            }}
-          >
-            Ezüstévek
-          </h1>
+          {/* BAL OLDAL - LAPOZHATÓ MAGAZIN */}
 
-          <p
-            className="mt-4 text-[24px] text-[#173b35] md:text-[28px]"
-            style={{
-              fontFamily: 'Georgia, "Times New Roman", serif',
-            }}
-          >
-            Aktív évek. Teljes élet.
-          </p>
-
-          <p className="mt-4 max-w-[760px] text-[18px] leading-8 text-[#554d45]">
-            Ingyenes online magazin az aktív, tartalmas és biztonságos
-            mindennapokért.
-          </p>
-
-          <div className="mt-6 flex items-center gap-4 text-[14px]">
-            <span className="font-semibold text-[#173b35]">
-              HU ISSN 3141-8589
-            </span>
-
-            <span className="text-[#a48e77]">•</span>
-
-            <span className="text-[#75685b]">
-              Havonta megjelenő online kiadvány
-            </span>
+          <div>
+            <MagazineReader />
           </div>
 
-        </div>
-      </section>
+          {/* JOBB OLDAL - SZIPORKA */}
 
-      {/* AKTUÁLIS SZÁM */}
+          <div className="flex justify-center lg:sticky lg:top-8">
 
-      <section className="bg-[#ead8c1]">
-        <div className="mx-auto max-w-[1180px] px-7 py-12 md:px-10">
-
-          <p className="text-[12px] font-semibold uppercase tracking-[0.22em] text-[#99672d]">
-            Ezüstévek magazin
-          </p>
-
-          <h2
-            className="mt-2 text-[38px] font-normal text-[#8f2630]"
-            style={{
-              fontFamily: 'Georgia, "Times New Roman", serif',
-            }}
-          >
-            Aktuális szám
-          </h2>
-
-          <div className="mt-8">
-
-            <a
-              href="/ezustevek/2026-november.pdf"
-              target="_blank"
-              rel="noreferrer"
-              className="block w-fit"
-              aria-label="Ezüstévek 2026. november megnyitása"
-            >
-              <Image
-                src="/ezustevek/2026-november-borito.png"
-                alt="Ezüstévek 2026. november"
-                width={320}
-                height={450}
-                className="h-auto w-[240px] rounded-[14px] shadow-[0_18px_38px_rgba(0,0,0,0.20)] transition hover:-translate-y-1"
-              />
-            </a>
+            <Image
+              src="/ezustevek/Őszi olvasás az Ezüstévekkel.png"
+              alt="Sziporka az Ezüstévek magazint olvassa"
+              width={820}
+              height={1100}
+              priority
+              className="h-auto w-full max-w-[560px] object-contain"
+            />
 
           </div>
 
         </div>
-      </section>
 
-      {/* A MAGAZINRÓL */}
+        {/* ISSN */}
 
-      <section className="bg-[#fffaf4]">
-        <div className="mx-auto max-w-[1180px] px-7 py-11 md:px-10">
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-4 text-[13px] text-[#74685c]">
+          <span className="font-semibold text-[#173b35]">
+            HU ISSN 3141-8589
+          </span>
 
-          <div className="grid gap-7 md:grid-cols-[240px_1fr]">
+          <span>•</span>
 
-            <h2
-              className="text-[31px] font-normal text-[#173b35]"
-              style={{
-                fontFamily: 'Georgia, "Times New Roman", serif',
-              }}
-            >
-              A magazinról
-            </h2>
+          <span>2026. november</span>
 
-            <p className="max-w-[810px] text-[17px] leading-8 text-[#504941]">
-              Az Ezüstévek hosszú távra tervezett, havonta megjelenő online
-              kiadvány. Célja, hogy megbízható, közérthető és valóban hasznos
-              tartalmakkal segítse az olvasókat az egészség, életmód,
-              közösségi élet, szociális ellátás és a mindennapi biztonság
-              területén.
-            </p>
+          <span>•</span>
 
-          </div>
+          <span>1. évfolyam • 1. szám</span>
         </div>
-      </section>
 
-      {/* LAPSZÁMOK */}
+        {/* LAPSZÁMOK */}
 
-      <section className="border-t border-[#dfd2c1] bg-[#f5eee4]">
-        <div className="mx-auto max-w-[1180px] px-7 py-11 md:px-10">
+        <div className="mt-14 border-t border-[#dfd3c5] pt-10">
 
           <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#a87330]">
             Archívum
@@ -240,11 +334,15 @@ export default function EzustevekPage() {
           <div className="mt-7 flex flex-wrap gap-5">
 
             <a
-              href="/ezustevek/2026-november.pdf"
-              target="_blank"
-              rel="noreferrer"
+              href="#"
+              onClick={(event) => {
+                event.preventDefault();
+                window.scrollTo({
+                  top: 0,
+                  behavior: "smooth",
+                });
+              }}
               className="group block w-[175px]"
-              aria-label="Ezüstévek 2026. november megnyitása"
             >
               <div className="rounded-[15px] border border-[#dbcab7] bg-white p-3 shadow-sm transition group-hover:-translate-y-1 group-hover:shadow-lg">
 
@@ -266,82 +364,94 @@ export default function EzustevekPage() {
                     2026. november
                   </p>
 
+                  <p className="mt-2 text-[13px] font-medium text-[#8f2630]">
+                    Lapozható formátumban
+                  </p>
+
                 </div>
 
               </div>
             </a>
 
           </div>
-
         </div>
-      </section>
 
-      {/* IMPRESSZUM */}
+        {/* IMPRESSZUM */}
 
-      <section className="bg-[#251e19] text-[#ddd0c0]">
-        <div className="mx-auto max-w-[1180px] px-7 py-9 md:px-10">
+        <div className="mt-14 border-t border-[#dfd3c5] pt-9">
 
           <div className="grid gap-8 md:grid-cols-3">
 
             <div>
-              <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#c89b61]">
+              <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#a87330]">
                 Impresszum
               </p>
 
-              <p className="mt-4 text-[18px] font-semibold text-white">
+              <p className="mt-4 text-[18px] font-semibold text-[#173b35]">
                 Ezüstévek
               </p>
 
-              <p className="mt-3 font-bold text-white">
+              <p className="mt-3 font-bold text-[#173b35]">
                 HU ISSN 3141-8589
               </p>
             </div>
 
-            <div className="text-[14px] leading-7">
+            <div className="text-[14px] leading-7 text-[#5d544b]">
               <p>
-                <strong className="text-white">Kiadó:</strong>{" "}
+                <strong className="text-[#173b35]">
+                  Kiadó:
+                </strong>{" "}
                 Keszthelyi Andrea
               </p>
 
               <p className="mt-2">
-                <strong className="text-white">
+                <strong className="text-[#173b35]">
                   Kiadásért és szerkesztésért felelős:
                 </strong>{" "}
                 Keszthelyi Andrea
               </p>
 
               <p className="mt-2">
-                <strong className="text-white">Web:</strong>{" "}
+                <strong className="text-[#173b35]">
+                  Web:
+                </strong>{" "}
                 keszthelyiconsulting.com
               </p>
             </div>
 
-            <div className="text-[14px] leading-7">
+            <div className="text-[14px] leading-7 text-[#5d544b]">
               <p>
-                <strong className="text-white">Kiadó címe:</strong>{" "}
+                <strong className="text-[#173b35]">
+                  Kiadó címe:
+                </strong>{" "}
                 7967 Markóc, Fő utca 35.
               </p>
 
               <p className="mt-2">
-                <strong className="text-white">E-mail:</strong>{" "}
+                <strong className="text-[#173b35]">
+                  E-mail:
+                </strong>{" "}
                 info@keszthelyiconsulting.com
               </p>
 
               <p className="mt-2">
-                <strong className="text-white">Megjelenés:</strong>{" "}
+                <strong className="text-[#173b35]">
+                  Megjelenés:
+                </strong>{" "}
                 havonta, online
               </p>
             </div>
 
           </div>
 
-          <p className="mt-7 border-t border-white/10 pt-5 text-[13px] leading-6 text-[#b8aa99]">
+          <p className="mt-7 border-t border-[#dfd3c5] pt-5 text-[13px] leading-6 text-[#766b5f]">
             Az Ezüstévek egészségügyi témájú írásai tájékoztató jellegűek,
             nem helyettesítik az orvosi vizsgálatot, diagnózist vagy
             személyre szabott orvosi tanácsadást.
           </p>
 
         </div>
+
       </section>
 
       <Footer />
