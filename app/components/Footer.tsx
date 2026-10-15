@@ -1,36 +1,3 @@
-nincs ilyen találat
-
-Rendben, akkor ne a „Könyvek” szövegre keressünk tovább. Valószínűleg a menü nem közvetlenül ugyanabban a fájlban van kiírva, vagy másképp van felépítve.
-
-A következő legjobb hely a gyökér layout.
-
-Menj vissza az app mappába, és keresd meg ezt a fájlt:
-
-app/layout.tsx
-
-Nyisd meg, és másold be ide a tartalmát, vagy küldj róla képet. Ott nagy eséllyel látni fogjuk, milyen Header, Navbar vagy más közös komponenst használ az egész weboldal.
-
-Ha ott nincs, utána megnézzük az app/page.tsx fájlt. Most elsőként az app/layout.tsx kell.
-de miért nem a vercelben dolgozunk?
-
-Azért, mert nálad a Vercel most a GitHubból építi és publikálja az oldalt. A Vercelben főleg a deploymentet, domaint és a futást látjuk; a tényleges Next.js fájlokat nálad a GitHub-repóban szerkesztjük.
-
-A folyamat tehát:
-
-GitHubban módosítunk → commit → Vercel automatikusan deployolja → weboldalon megjelenik.
-
-Viszont jogos a kérdésed, mert korábban mondtad, hogy szeretnéd, ha kevesebbet kellene kézzel kattintgatnod. Ha a Vercelt közvetlenül csatlakoztatjuk hozzám, akkor tudok vele sokkal közvetlenebbül dolgozni és ellenőrizni a deploymenteket. A forráskód módosításához továbbra is a GitHub a természetes hely, de a két rendszert együtt használhatjuk.
-
-Most ennél az Ezüstévek menüpont + teljes oldal arculati igazítás feladatnál én is inkább úgy csinálnám, hogy ne vakon keresgéljünk fájlokat: csatlakoztassuk a GitHubot, és akkor meg tudom keresni, hol van a valódi főmenü, és célzottan megmondani vagy elvégezni a módosítást.
-a footerst megtaláltam
-
-Szuper, az már hasznos nyom. 😊 A Footer.tsx-ben valószínűleg tudjuk egységesíteni az Ezüstévek impresszum-részét vagy hozzáadni oda az HU ISSN 3141-8589-et, ha a főoldali lábléc része.
-
-De a felső menü valószínűleg nem ott van.
-
-Most ezt csináld: nyisd meg a Footer.tsx fájlt, és másold be ide a tartalmát. Abból egyrészt látni fogom, hogyan van felépítve a weboldal közös arculata, másrészt gyakran ugyanabban a környezetben importálják a fejlécet vagy a navigációt is.
-
-Utána megkeressük a tényleges főmenüt, és oda tesszük be az Ezüstévek menüpontot.
 export default function Footer() {
   const banks = [
     {
@@ -95,9 +62,7 @@ export default function Footer() {
   return (
     <footer className="border-t border-amber-500/20 bg-black text-white">
       <div className="mx-auto max-w-7xl px-8 py-14">
-
         <div className="grid gap-12 md:grid-cols-3">
-
           <div>
             <h3 className="mb-4 text-2xl font-light text-amber-100">
               Keszthelyi Consulting
@@ -172,6 +137,13 @@ export default function Footer() {
               >
                 Könyvek
               </a>
+
+              <a
+                href="/ezustevek"
+                className="block transition hover:text-amber-200"
+              >
+                Ezüstévek
+              </a>
             </div>
           </div>
 
@@ -190,13 +162,9 @@ export default function Footer() {
               </p>
             </div>
           </div>
-
         </div>
 
-        {/* AMIVEL FOGLALKOZOM */}
-
         <div className="mt-12 border-t border-white/10 pt-10">
-
           <p className="mb-7 text-center text-sm uppercase tracking-[0.25em] text-amber-200">
             Amivel foglalkozom
           </p>
@@ -211,36 +179,30 @@ export default function Footer() {
               </span>
             ))}
           </div>
-
         </div>
 
-        {/* BIZTOSÍTÁSI PARTNER */}
+        <div className="mt-12 border-t border-white/10 pt-10">
+          <p className="mb-7 text-center text-sm uppercase tracking-[0.25em] text-amber-200">
+            Biztosítási partnerünk
+          </p>
 
-<div className="mt-12 border-t border-white/10 pt-10">
-  <p className="mb-7 text-center text-sm uppercase tracking-[0.25em] text-amber-200">
-    Biztosítási partnerünk
-  </p>
-
-  <div className="flex justify-center">
-    <div className="flex h-16 w-32 items-center justify-center overflow-hidden rounded-xl bg-white">
-      <img
-        src="/images/banks/metlife.png"
-        alt="MetLife"
-        className="h-28 w-56 max-w-none object-contain"
-      />
-    </div>
-  </div>
-</div>
-        {/* PARTNEREK */}
+          <div className="flex justify-center">
+            <div className="flex h-16 w-32 items-center justify-center overflow-hidden rounded-xl bg-white">
+              <img
+                src="/images/banks/metlife.png"
+                alt="MetLife"
+                className="h-28 w-56 max-w-none object-contain"
+              />
+            </div>
+          </div>
+        </div>
 
         <div className="mt-12 border-t border-white/10 pt-10">
-
           <p className="mb-7 text-center text-sm uppercase tracking-[0.25em] text-amber-200">
             Banki partnereink
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-7">
-
             {banks.map((bank) => (
               <div
                 key={bank.name}
@@ -253,20 +215,16 @@ export default function Footer() {
                 />
               </div>
             ))}
-
           </div>
         </div>
 
         <div className="mt-12 border-t border-white/10 pt-6">
-
           <div className="flex flex-col items-center justify-between gap-4 text-sm text-zinc-500 md:flex-row">
-
             <p>
               © 2026 Keszthelyi Consulting
             </p>
 
             <div className="flex flex-wrap justify-center gap-5">
-
               <a
                 href="/penzugy/adatkezeles"
                 className="transition hover:text-zinc-300"
@@ -280,13 +238,9 @@ export default function Footer() {
               >
                 Kapcsolat
               </a>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
     </footer>
   );
