@@ -84,6 +84,7 @@ export default function Footer() {
             </h3>
 
             <div className="space-y-3 text-zinc-400">
+
               <a
                 href="/"
                 className="block transition hover:text-amber-200"
@@ -139,6 +140,14 @@ export default function Footer() {
               >
                 Könyvek
               </a>
+
+              <a
+                href="/ezustevek"
+                className="block transition hover:text-amber-200"
+              >
+                Ezüstévek
+              </a>
+
             </div>
           </div>
 
@@ -183,21 +192,22 @@ export default function Footer() {
 
         {/* BIZTOSÍTÁSI PARTNER */}
 
-<div className="mt-12 border-t border-white/10 pt-10">
-  <p className="mb-7 text-center text-sm uppercase tracking-[0.25em] text-amber-200">
-    Biztosítási partnerünk
-  </p>
+        <div className="mt-12 border-t border-white/10 pt-10">
+          <p className="mb-7 text-center text-sm uppercase tracking-[0.25em] text-amber-200">
+            Biztosítási partnerünk
+          </p>
 
-  <div className="flex justify-center">
-    <div className="flex h-16 w-32 items-center justify-center overflow-hidden rounded-xl bg-white">
-      <img
-        src="/images/banks/metlife.png"
-        alt="MetLife"
-        className="h-28 w-56 max-w-none object-contain"
-      />
-    </div>
-  </div>
-</div>
+          <div className="flex justify-center">
+            <div className="flex h-16 w-32 items-center justify-center overflow-hidden rounded-xl bg-white">
+              <img
+                src="/images/banks/metlife.png"
+                alt="MetLife"
+                className="h-28 w-56 max-w-none object-contain"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* PARTNEREK */}
 
         <div className="mt-12 border-t border-white/10 pt-10">
