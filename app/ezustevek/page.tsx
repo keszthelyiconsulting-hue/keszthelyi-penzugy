@@ -7,108 +7,166 @@ import { useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
 
 function MagazineReader() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const pdfRef = useRef<any>(null);
-  const renderTaskRef = useRef<any>(null);
+  const bookRef = useRef<HTMLDivElement | null>(null);
+  const pageFlipRef = useRef<any>(null);
 
-  const [ready, setReady] = useState(false);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pageCount, setPageCount] = useState(0);
+  const [pdfReady, setPdfReady] = useState(false);
+  const [flipReady, setFlipReady] = useState(false);
+  const [pages, setPages] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
-  async function loadPdf() {
-    const pdfjsLib = (window as any).pdfjsLib;
-
-    if (!pdfjsLib) return;
-
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-
-    const pdf = await pdfjsLib
-      .getDocument("/ezustevek/2026-november.pdf")
-      .promise;
-
-    pdfRef.current = pdf;
-    setPageCount(pdf.numPages);
-    setReady(true);
-  }
-
   useEffect(() => {
-    if (!ready || !pdfRef.current || !canvasRef.current) return;
+    if (!pdfReady) return;
 
     let cancelled = false;
 
-    async function renderPage() {
-      setLoading(true);
-
+    async function buildPages() {
       try {
-        if (renderTaskRef.current) {
-          try {
-            renderTaskRef.current.cancel();
-          } catch {}
+        const pdfjsLib = (window as any).pdfjsLib;
+
+        if (!pdfjsLib) return;
+
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+          "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+        const pdf = await pdfjsLib
+          .getDocument("/ezustevek/2026-november.pdf")
+          .promise;
+
+        const generatedPages: string[] = [];
+
+        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+          const page = await pdf.getPage(pageNumber);
+
+          const viewport = page.getViewport({
+            scale: 1.55,
+          });
+
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d");
+
+          if (!context) continue;
+
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          await page.render({
+            canvasContext: context,
+            viewport,
+          }).promise;
+
+          generatedPages.push(
+            canvas.toDataURL("image/jpeg", 0.93)
+          );
+
+          if (cancelled) return;
         }
 
-        const page = await pdfRef.current.getPage(pageNumber);
-
-        const baseViewport = page.getViewport({ scale: 1 });
-
-        const maxWidth = 540;
-        const scale = maxWidth / baseViewport.width;
-
-        const viewport = page.getViewport({ scale });
-
-        const canvas = canvasRef.current;
-
-        if (!canvas || cancelled) return;
-
-        const context = canvas.getContext("2d");
-
-        if (!context) return;
-
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-
-        const task = page.render({
-          canvasContext: context,
-          viewport,
-        });
-
-        renderTaskRef.current = task;
-
-        await task.promise;
-      } catch (error: any) {
-        if (error?.name !== "RenderingCancelledException") {
-          console.error(error);
+        if (!cancelled) {
+          setPages(generatedPages);
+          setLoading(false);
         }
-      } finally {
-        if (!cancelled) setLoading(false);
+      } catch (error) {
+        console.error(error);
       }
     }
 
-    renderPage();
+    buildPages();
 
     return () => {
       cancelled = true;
     };
-  }, [ready, pageNumber]);
+  }, [pdfReady]);
+
+  useEffect(() => {
+    if (!flipReady || pages.length === 0 || !bookRef.current) return;
+
+    const St = (window as any).St;
+
+    if (!St?.PageFlip) return;
+
+    if (pageFlipRef.current) {
+      try {
+        pageFlipRef.current.destroy();
+      } catch {}
+    }
+
+    const pageFlip = new St.PageFlip(bookRef.current, {
+      width: 420,
+      height: 594,
+
+      size: "stretch",
+
+      minWidth: 280,
+      maxWidth: 520,
+
+      minHeight: 396,
+      maxHeight: 735,
+
+      maxShadowOpacity: 0.45,
+
+      showCover: true,
+
+      mobileScrollSupport: false,
+
+      usePortrait: true,
+
+      flippingTime: 900,
+
+      drawShadow: true,
+
+      autoSize: true,
+
+      startPage: 0,
+    });
+
+    pageFlip.loadFromImages(pages);
+
+    pageFlip.on("flip", (event: any) => {
+      setCurrentPage(event.data + 1);
+    });
+
+    pageFlipRef.current = pageFlip;
+
+    return () => {
+      try {
+        pageFlip.destroy();
+      } catch {}
+    };
+  }, [flipReady, pages]);
+
+  function previousPage() {
+    pageFlipRef.current?.flipPrev();
+  }
+
+  function nextPage() {
+    pageFlipRef.current?.flipNext();
+  }
 
   return (
     <>
       <Script
         src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
         strategy="afterInteractive"
-        onLoad={loadPdf}
+        onLoad={() => setPdfReady(true)}
+      />
+
+      <Script
+        src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"
+        strategy="afterInteractive"
+        onLoad={() => setFlipReady(true)}
       />
 
       <div className="w-full">
-        <div className="mb-4 flex items-center justify-between gap-3">
+
+        <div className="mb-5 flex items-center justify-between gap-3">
+
           <button
             type="button"
-            onClick={() =>
-              setPageNumber((page) => Math.max(1, page - 1))
-            }
-            disabled={pageNumber === 1}
-            className="rounded-full border border-[#c9b38f] px-5 py-2 text-[14px] font-semibold text-[#173b35] transition hover:bg-[#efe4d4] disabled:cursor-default disabled:opacity-30"
+            onClick={previousPage}
+            disabled={currentPage <= 1}
+            className="rounded-full border border-[#c9b38f] px-5 py-2 text-[14px] font-semibold text-[#173b35] transition hover:bg-[#efe4d4] disabled:opacity-30"
           >
             ← Előző
           </button>
@@ -119,38 +177,41 @@ function MagazineReader() {
             </p>
 
             <p className="mt-1 text-[14px] text-[#62574b]">
-              {pageNumber} / {pageCount || "–"}
+              {currentPage} / {pages.length || "–"}
             </p>
           </div>
 
           <button
             type="button"
-            onClick={() =>
-              setPageNumber((page) =>
-                Math.min(pageCount || page, page + 1)
-              )
-            }
-            disabled={!pageCount || pageNumber === pageCount}
-            className="rounded-full bg-[#173b35] px-5 py-2 text-[14px] font-semibold text-white transition hover:bg-[#102d29] disabled:cursor-default disabled:opacity-30"
+            onClick={nextPage}
+            disabled={!pages.length || currentPage >= pages.length}
+            className="rounded-full bg-[#173b35] px-5 py-2 text-[14px] font-semibold text-white transition hover:bg-[#102d29] disabled:opacity-30"
           >
             Következő →
           </button>
+
         </div>
 
-        <div className="relative mx-auto flex min-h-[650px] items-center justify-center rounded-[22px] bg-[#ded5c9] p-4 shadow-[0_24px_60px_rgba(0,0,0,0.18)]">
+        <div className="relative flex min-h-[690px] items-center justify-center overflow-hidden rounded-[24px] bg-[#ddd4c8] p-5 shadow-[0_25px_65px_rgba(0,0,0,0.20)]">
+
           {loading && (
-            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[22px] bg-[#ded5c9]/80 text-[#665b4f]">
-              Magazin betöltése…
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-[#ddd4c8] text-[#665b4f]">
+              A magazin előkészítése…
             </div>
           )}
 
-          <canvas
-            ref={canvasRef}
-            className="block h-auto max-h-[76vh] max-w-full bg-white shadow-[0_8px_28px_rgba(0,0,0,0.18)]"
+          <div
+            ref={bookRef}
+            className="mx-auto"
           />
+
         </div>
 
-        <div className="mt-4 text-center">
+        <p className="mt-4 text-center text-[13px] leading-6 text-[#766b5f]">
+          Kattints vagy húzd az oldal szélét a lapozáshoz.
+        </p>
+
+        <div className="mt-2 text-center">
           <a
             href="/ezustevek/2026-november.pdf"
             target="_blank"
@@ -160,6 +221,7 @@ function MagazineReader() {
             PDF megnyitása külön lapon
           </a>
         </div>
+
       </div>
     </>
   );
@@ -173,6 +235,7 @@ export default function EzustevekPage() {
 
       <header className="bg-black">
         <div className="mx-auto flex max-w-[1280px] items-center px-5 py-3 md:px-8">
+
           <Link
             href="/ezustevek"
             aria-label="Ezüstévek"
@@ -192,11 +255,13 @@ export default function EzustevekPage() {
               <span style={{ color: "#2f7568" }}>
                 Ezüst
               </span>
+
               <span style={{ color: "#d28a3a" }}>
                 évek
               </span>
             </h1>
           </Link>
+
         </div>
       </header>
 
@@ -204,9 +269,9 @@ export default function EzustevekPage() {
 
       <section className="mx-auto max-w-[1280px] px-5 py-10 md:px-8 lg:py-14">
 
-        <div className="grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+        <div className="grid items-start gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
 
-          {/* BAL OLDAL - LAPOZHATÓ MAGAZIN */}
+          {/* BAL OLDAL - VALÓDI LAPOZHATÓ MAGAZIN */}
 
           <div>
             <MagazineReader />
@@ -215,14 +280,16 @@ export default function EzustevekPage() {
           {/* JOBB OLDAL - SZIPORKA */}
 
           <div className="flex justify-center lg:sticky lg:top-8">
+
             <Image
               src="/ezustevek/Őszi olvasás az Ezüstévekkel.png"
               alt="Sziporka az Ezüstévek magazint olvassa"
               width={820}
               height={1100}
               priority
-              className="h-auto w-full max-w-[560px] object-contain"
+              className="h-auto w-full max-w-[540px] object-contain"
             />
+
           </div>
 
         </div>
@@ -230,6 +297,7 @@ export default function EzustevekPage() {
         {/* ISSN */}
 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4 text-[13px] text-[#74685c]">
+
           <span className="font-semibold text-[#173b35]">
             HU ISSN 3141-8589
           </span>
@@ -241,6 +309,7 @@ export default function EzustevekPage() {
           <span>•</span>
 
           <span>1. évfolyam • 1. szám</span>
+
         </div>
 
         {/* LAPSZÁMOK */}
@@ -262,17 +331,17 @@ export default function EzustevekPage() {
 
           <div className="mt-7 flex flex-wrap gap-5">
 
-            <a
-              href="#"
-              onClick={(event) => {
-                event.preventDefault();
+            <button
+              type="button"
+              onClick={() =>
                 window.scrollTo({
                   top: 0,
                   behavior: "smooth",
-                });
-              }}
-              className="group block w-[175px]"
+                })
+              }
+              className="group block w-[175px] text-left"
             >
+
               <div className="rounded-[15px] border border-[#dbcab7] bg-white p-3 shadow-sm transition group-hover:-translate-y-1 group-hover:shadow-lg">
 
                 <Image
@@ -294,15 +363,17 @@ export default function EzustevekPage() {
                   </p>
 
                   <p className="mt-2 text-[13px] font-medium text-[#8f2630]">
-                    Lapozható formátumban
+                    Lapozható magazin
                   </p>
 
                 </div>
 
               </div>
-            </a>
+
+            </button>
 
           </div>
+
         </div>
 
         {/* IMPRESSZUM */}
@@ -312,6 +383,7 @@ export default function EzustevekPage() {
           <div className="grid gap-8 md:grid-cols-3">
 
             <div>
+
               <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#a87330]">
                 Impresszum
               </p>
@@ -323,9 +395,11 @@ export default function EzustevekPage() {
               <p className="mt-3 font-bold text-[#173b35]">
                 HU ISSN 3141-8589
               </p>
+
             </div>
 
             <div className="text-[14px] leading-7 text-[#5d544b]">
+
               <p>
                 <strong className="text-[#173b35]">
                   Kiadó:
@@ -346,9 +420,11 @@ export default function EzustevekPage() {
                 </strong>{" "}
                 keszthelyiconsulting.com
               </p>
+
             </div>
 
             <div className="text-[14px] leading-7 text-[#5d544b]">
+
               <p>
                 <strong className="text-[#173b35]">
                   Kiadó címe:
@@ -369,6 +445,7 @@ export default function EzustevekPage() {
                 </strong>{" "}
                 havonta, online
               </p>
+
             </div>
 
           </div>
