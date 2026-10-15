@@ -102,7 +102,6 @@ function MagazineReader() {
 
       <div className="w-full">
         <div className="mb-4 flex items-center justify-between gap-3">
-
           <button
             type="button"
             onClick={() =>
@@ -136,11 +135,9 @@ function MagazineReader() {
           >
             Következő →
           </button>
-
         </div>
 
         <div className="relative mx-auto flex min-h-[650px] items-center justify-center rounded-[22px] bg-[#ded5c9] p-4 shadow-[0_24px_60px_rgba(0,0,0,0.18)]">
-
           {loading && (
             <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[22px] bg-[#ded5c9]/80 text-[#665b4f]">
               Magazin betöltése…
@@ -151,7 +148,6 @@ function MagazineReader() {
             ref={canvasRef}
             className="block h-auto max-h-[76vh] max-w-full bg-white shadow-[0_8px_28px_rgba(0,0,0,0.18)]"
           />
-
         </div>
 
         <div className="mt-4 text-center">
@@ -173,99 +169,34 @@ export default function EzustevekPage() {
   return (
     <main className="min-h-screen bg-[#f7f2eb] text-[#24312e]">
 
-      {/* KESZTHELYI CONSULTING FEJLÉC */}
+      {/* EZÜSTÉVEK FEJLÉC */}
 
-      <header className="border-b border-white/10 bg-black">
-        <div className="mx-auto flex max-w-[1540px] items-center justify-between px-8 py-4">
-
+      <header className="bg-black">
+        <div className="mx-auto flex max-w-[1280px] items-center px-5 py-3 md:px-8">
           <Link
-            href="/penzugy"
-            aria-label="Keszthelyi Consulting"
-            className="flex shrink-0 items-center"
+            href="/ezustevek"
+            aria-label="Ezüstévek"
+            className="inline-block"
           >
-            <Image
-              src="/keszthelyi-consulting-logo-light.png"
-              alt="Keszthelyi Consulting"
-              width={420}
-              height={170}
-              priority
-              className="h-auto w-[230px] object-contain"
-            />
+            <h1
+              className="leading-none"
+              style={{
+                fontFamily:
+                  '"Palatino Linotype", Palatino, "Book Antiqua", Garamond, Georgia, serif',
+                fontSize: "clamp(48px, 5.5vw, 72px)",
+                fontStyle: "italic",
+                fontWeight: 700,
+                letterSpacing: "-0.055em",
+              }}
+            >
+              <span style={{ color: "#2f7568" }}>
+                Ezüst
+              </span>
+              <span style={{ color: "#d28a3a" }}>
+                évek
+              </span>
+            </h1>
           </Link>
-
-          <nav className="hidden flex-wrap items-center justify-end gap-x-5 gap-y-3 pl-6 lg:flex">
-
-            <Link
-              href="/penzugy#hitelek"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
-            >
-              Hitelek
-            </Link>
-
-            <Link
-              href="/penzugy#biztositasok"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
-            >
-              Biztosítások
-            </Link>
-
-            <Link
-              href="/penzugy#megtakaritasok"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
-            >
-              Megtakarítások
-            </Link>
-
-            <Link
-              href="/penzugy#szamlatermekek"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
-            >
-              Számlatermékek
-            </Link>
-
-            <Link
-              href="/penzugy#vallalkozasok"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
-            >
-              Vállalkozások
-            </Link>
-
-            <Link
-              href="/penzugy/kalkulatorok"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
-            >
-              Kalkulátorok
-            </Link>
-
-            <Link
-              href="/konyvek"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
-            >
-              Könyvek
-            </Link>
-
-            <Link
-              href="/ezustevek"
-              className="text-[18px] font-semibold text-[#d4ad71]"
-            >
-              Ezüstévek
-            </Link>
-
-            <Link
-              href="/penzugy/kapcsolat"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
-            >
-              Kapcsolat
-            </Link>
-
-            <Link
-              href="/penzugy/adatkezeles"
-              className="text-[18px] font-medium text-[#d8c3a0] transition hover:text-white"
-            >
-              Adatkezelés
-            </Link>
-
-          </nav>
         </div>
       </header>
 
@@ -284,7 +215,6 @@ export default function EzustevekPage() {
           {/* JOBB OLDAL - SZIPORKA */}
 
           <div className="flex justify-center lg:sticky lg:top-8">
-
             <Image
               src="/ezustevek/Őszi olvasás az Ezüstévekkel.png"
               alt="Sziporka az Ezüstévek magazint olvassa"
@@ -293,7 +223,6 @@ export default function EzustevekPage() {
               priority
               className="h-auto w-full max-w-[560px] object-contain"
             />
-
           </div>
 
         </div>
