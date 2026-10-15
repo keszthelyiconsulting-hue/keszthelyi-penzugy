@@ -280,7 +280,7 @@ justifyContent: "start",
               <strong>Web:</strong> keszthelyiconsulting.com
             </p>
             <p style={{ margin: "0 0 14px" }}>
-              <strong>ISSN:</strong> megállapítása folyamatban
+              <strong>HU ISSN 3141-8589</strong>
             </p>
 
             <p style={{ margin: 0 }}>
