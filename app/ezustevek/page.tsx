@@ -155,66 +155,36 @@ export default function EzustevekPage() {
       <section className="bg-[#ead8c1]">
         <div className="mx-auto max-w-[1180px] px-7 py-12 md:px-10">
 
-          <div className="mb-8">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.22em] text-[#99672d]">
-              Ezüstévek magazin
-            </p>
+          <p className="text-[12px] font-semibold uppercase tracking-[0.22em] text-[#99672d]">
+            Ezüstévek magazin
+          </p>
 
-            <h2
-              className="mt-2 text-[38px] font-normal text-[#8f2630]"
-              style={{
-                fontFamily: 'Georgia, "Times New Roman", serif',
-              }}
-            >
-              Aktuális szám
-            </h2>
-          </div>
+          <h2
+            className="mt-2 text-[38px] font-normal text-[#8f2630]"
+            style={{
+              fontFamily: 'Georgia, "Times New Roman", serif',
+            }}
+          >
+            Aktuális szám
+          </h2>
 
-          <div className="flex flex-col items-start gap-7 md:flex-row md:items-end">
+          <div className="mt-8">
 
-            <Link
-              href="/ezustevek/olvaso"
-              className="group block"
+            <a
+              href="/ezustevek/2026-november.pdf"
+              target="_blank"
+              rel="noreferrer"
+              className="block w-fit"
+              aria-label="Ezüstévek 2026. november megnyitása"
             >
               <Image
                 src="/ezustevek/2026-november-borito.png"
                 alt="Ezüstévek 2026. november"
                 width={320}
                 height={450}
-                className="h-auto w-[240px] rounded-[14px] shadow-[0_18px_38px_rgba(0,0,0,0.20)] transition group-hover:-translate-y-1"
+                className="h-auto w-[240px] rounded-[14px] shadow-[0_18px_38px_rgba(0,0,0,0.20)] transition hover:-translate-y-1"
               />
-            </Link>
-
-            <div className="pb-1">
-
-              <p className="text-[18px] font-bold text-[#173b35]">
-                1. évfolyam • 1. szám
-              </p>
-
-              <p className="mt-1 text-[17px] font-semibold text-[#8f2630]">
-                2026. november
-              </p>
-
-              <Link
-                href="/ezustevek/olvaso"
-                className="mt-5 inline-flex items-center text-[16px] font-semibold text-[#173b35] transition hover:text-[#8f2630]"
-              >
-                Megnyitás lapozható nézetben
-                <span className="ml-2">→</span>
-              </Link>
-
-              <div className="mt-3">
-                <a
-                  href="/ezustevek/2026-november.pdf"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-[14px] text-[#75685b] underline underline-offset-4 hover:text-[#173b35]"
-                >
-                  PDF változat megnyitása
-                </a>
-              </div>
-
-            </div>
+            </a>
 
           </div>
 
@@ -269,9 +239,12 @@ export default function EzustevekPage() {
 
           <div className="mt-7 flex flex-wrap gap-5">
 
-            <Link
-              href="/ezustevek/olvaso"
+            <a
+              href="/ezustevek/2026-november.pdf"
+              target="_blank"
+              rel="noreferrer"
               className="group block w-[175px]"
+              aria-label="Ezüstévek 2026. november megnyitása"
             >
               <div className="rounded-[15px] border border-[#dbcab7] bg-white p-3 shadow-sm transition group-hover:-translate-y-1 group-hover:shadow-lg">
 
@@ -293,15 +266,13 @@ export default function EzustevekPage() {
                     2026. november
                   </p>
 
-                  <p className="mt-2 text-[13px] font-medium text-[#8f2630]">
-                    Olvasás →
-                  </p>
-
                 </div>
+
               </div>
-            </Link>
+            </a>
 
           </div>
+
         </div>
       </section>
 
