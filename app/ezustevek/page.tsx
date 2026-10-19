@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
@@ -249,21 +250,11 @@ export default function EzustevekPage() {
 
   const shareUrl =
     typeof window !== "undefined"
-      ? `${window.location.origin}/ezustevek`
+      ? window.location.href
       : "https://www.keszthelyiconsulting.com/ezustevek";
 
-  const shareText =
-    "Lapozd bele az Ezüstévek 2026. novemberi számába!";
-
-  const facebookUrl =
-    `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
-
-  const whatsappUrl =
-    `https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`;
-
-  const emailUrl =
-    `mailto:?subject=${encodeURIComponent("Ezüstévek – 2026. november")}` +
-    `&body=${encodeURIComponent(`${shareText}\n\n${shareUrl}`)}`;
+  const shareTitle = "Ezüstévek – 2026. november";
+  const shareText = "Lapozd bele az Ezüstévek 2026. novemberi számába!";
 
   const copyShareLink = async () => {
     try {
@@ -271,11 +262,11 @@ export default function EzustevekPage() {
       setShareStatus("Link kimásolva ✓");
       window.setTimeout(() => setShareStatus(""), 1800);
     } catch {
-      setShareStatus("A link nem másolható automatikusan");
+      window.prompt("Másold ki ezt a linket:", shareUrl);
     }
   };
 
-  const systemShare = async () => {
+  const nativeShare = async () => {
     if (!navigator.share) {
       await copyShareLink();
       return;
@@ -283,37 +274,63 @@ export default function EzustevekPage() {
 
     try {
       await navigator.share({
-        title: "Ezüstévek – 2026. november",
+        title: shareTitle,
         text: shareText,
         url: shareUrl,
       });
+      setShareOpen(false);
     } catch (error: any) {
       if (error?.name !== "AbortError") {
-        console.error(error);
+        await copyShareLink();
       }
     }
   };
+
+  const facebookUrl =
+    "https://www.facebook.com/sharer/sharer.php?u=" +
+    encodeURIComponent(shareUrl);
+
+  const whatsappUrl =
+    "https://wa.me/?text=" +
+    encodeURIComponent(`${shareText} ${shareUrl}`);
+
+  const emailUrl =
+    "mailto:?subject=" +
+    encodeURIComponent(shareTitle) +
+    "&body=" +
+    encodeURIComponent(`${shareText}\n\n${shareUrl}`);
 
   return (
     <main className="min-h-screen bg-[#f7f2eb] text-[#24312e]">
 
       {/* EZÜSTÉVEK FEJLÉC */}
       <header className="bg-black">
-        <div className="mx-auto flex max-w-[1380px] items-center px-5 py-3 md:px-8">
+        <div className="mx-auto grid max-w-[1380px] grid-cols-[1fr_auto_1fr] items-center gap-3 px-5 py-2.5 md:px-8">
+          <div className="justify-self-start">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-[14px] font-semibold text-white/85 transition hover:border-white/40 hover:bg-white/10 hover:text-white"
+            >
+              <span aria-hidden="true">←</span>
+              <span>Főmenü</span>
+            </Link>
+          </div>
+
           <div
-            className="leading-none"
+            className="justify-self-center whitespace-nowrap leading-none text-white"
             style={{
               fontFamily:
-                '"Palatino Linotype", Palatino, "Book Antiqua", Garamond, Georgia, serif',
-              fontSize: "clamp(48px, 5.5vw, 72px)",
-              fontStyle: "italic",
-              fontWeight: 700,
-              letterSpacing: "-0.055em",
+                '"Segoe Script", "Lucida Handwriting", "Apple Chancery", "Brush Script MT", cursive',
+              fontSize: "clamp(46px, 5vw, 68px)",
+              fontWeight: 400,
+              letterSpacing: "-0.035em",
+              textShadow: "0 1px 0 rgba(255,255,255,0.08)",
             }}
           >
-            <span style={{ color: "#2f7568" }}>Ezüst</span>
-            <span style={{ color: "#d28a3a" }}>évek</span>
+            Ezüstévek
           </div>
+
+          <div aria-hidden="true" />
         </div>
       </header>
 
@@ -339,77 +356,74 @@ export default function EzustevekPage() {
               {/* MEGOSZTÁS – SZIPORKA KÉPÉBE ÁGYAZVA */}
               <div className="absolute bottom-4 right-4 z-20">
                 {shareOpen && (
-                  <div className="absolute bottom-14 right-0 w-[230px] rounded-[20px] border border-[#d8c29c] bg-[#fffaf3]/98 p-3 shadow-[0_16px_38px_rgba(0,0,0,0.28)] backdrop-blur">
-                    <p className="mb-2 px-2 text-[12px] font-semibold uppercase tracking-[0.14em] text-[#8a6335]">
-                      Megosztás
-                    </p>
+                  <div className="absolute bottom-[58px] right-0 w-[225px] overflow-hidden rounded-[18px] border border-[#d7c19b] bg-[#fffaf3]/98 p-2 shadow-[0_14px_38px_rgba(0,0,0,0.28)] backdrop-blur">
+                    <a
+                      href={facebookUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={() => setShareOpen(false)}
+                      className="flex items-center gap-3 rounded-[12px] px-3 py-2.5 text-[14px] font-semibold text-[#173b35] transition hover:bg-[#efe6d8]"
+                    >
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1877F2] text-[18px] font-bold text-white">f</span>
+                      Facebook
+                    </a>
 
-                    <div className="grid grid-cols-2 gap-2">
-                      <a
-                        href={facebookUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={() => setShareOpen(false)}
-                        className="flex items-center gap-2 rounded-xl bg-[#1877F2] px-3 py-2.5 text-[13px] font-semibold text-white transition hover:opacity-90"
-                      >
-                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-[18px] font-bold leading-none text-[#1877F2]">f</span>
-                        Facebook
-                      </a>
+                    <a
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={() => setShareOpen(false)}
+                      className="flex items-center gap-3 rounded-[12px] px-3 py-2.5 text-[14px] font-semibold text-[#173b35] transition hover:bg-[#efe6d8]"
+                    >
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#25D366] text-[16px] font-bold text-white">W</span>
+                      WhatsApp
+                    </a>
 
-                      <a
-                        href={whatsappUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={() => setShareOpen(false)}
-                        className="flex items-center gap-2 rounded-xl bg-[#25D366] px-3 py-2.5 text-[13px] font-semibold text-white transition hover:opacity-90"
-                      >
-                        <span className="flex h-6 w-6 items-center justify-center rounded-full border border-white/70 text-[13px] font-bold">W</span>
-                        WhatsApp
-                      </a>
+                    <a
+                      href={emailUrl}
+                      onClick={() => setShareOpen(false)}
+                      className="flex items-center gap-3 rounded-[12px] px-3 py-2.5 text-[14px] font-semibold text-[#173b35] transition hover:bg-[#efe6d8]"
+                    >
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#8a6a3f] text-[15px] text-white">✉</span>
+                      E-mail
+                    </a>
 
-                      <a
-                        href={emailUrl}
-                        onClick={() => setShareOpen(false)}
-                        className="flex items-center gap-2 rounded-xl border border-[#d8c29c] bg-white px-3 py-2.5 text-[13px] font-semibold text-[#173b35] transition hover:bg-[#f4eadc]"
-                      >
-                        <span className="text-[18px]">✉</span>
-                        E-mail
-                      </a>
-
-                      <button
-                        type="button"
-                        onClick={copyShareLink}
-                        className="flex items-center gap-2 rounded-xl border border-[#d8c29c] bg-white px-3 py-2.5 text-left text-[13px] font-semibold text-[#173b35] transition hover:bg-[#f4eadc]"
-                      >
-                        <span className="text-[18px]">🔗</span>
-                        Link
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        await copyShareLink();
+                        setShareOpen(false);
+                      }}
+                      className="flex w-full items-center gap-3 rounded-[12px] px-3 py-2.5 text-left text-[14px] font-semibold text-[#173b35] transition hover:bg-[#efe6d8]"
+                    >
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#173b35] text-[15px] text-white">⧉</span>
+                      Link másolása
+                    </button>
 
                     {typeof navigator !== "undefined" && navigator.share && (
                       <button
                         type="button"
-                        onClick={systemShare}
-                        className="mt-2 w-full rounded-xl bg-[#173b35] px-3 py-2.5 text-[13px] font-semibold text-white transition hover:bg-[#102e2a]"
+                        onClick={nativeShare}
+                        className="flex w-full items-center gap-3 rounded-[12px] px-3 py-2.5 text-left text-[14px] font-semibold text-[#173b35] transition hover:bg-[#efe6d8]"
                       >
-                        További megosztási lehetőségek
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[#c8b18e] bg-white text-[18px] text-[#173b35]">↗</span>
+                        További lehetőségek
                       </button>
                     )}
+                  </div>
+                )}
 
-                    {shareStatus && (
-                      <p className="mt-2 text-center text-[12px] font-medium text-[#173b35]">
-                        {shareStatus}
-                      </p>
-                    )}
+                {shareStatus && (
+                  <div className="absolute bottom-[58px] right-0 whitespace-nowrap rounded-full bg-black/85 px-3 py-1.5 text-[12px] font-medium text-white shadow-lg">
+                    {shareStatus}
                   </div>
                 )}
 
                 <button
                   type="button"
                   onClick={() => setShareOpen((open) => !open)}
-                  aria-expanded={shareOpen}
                   aria-label="Megosztási lehetőségek"
-                  title="Megosztás"
+                  aria-expanded={shareOpen}
                   className="flex items-center gap-2 rounded-full border border-[#d4ad71] bg-[#173b35]/95 px-4 py-2.5 text-[14px] font-semibold text-white shadow-[0_8px_22px_rgba(0,0,0,0.28)] backdrop-blur-sm transition hover:scale-[1.03] hover:bg-[#102e2a]"
                 >
                   <svg
