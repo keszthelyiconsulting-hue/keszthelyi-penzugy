@@ -244,44 +244,52 @@ function MagazineReader() {
 }
 
 export default function EzustevekPage() {
+  const [shareOpen, setShareOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
 
-  const shareMagazine = async () => {
-    const shareUrl =
-      typeof window !== "undefined"
-        ? window.location.href
-        : "https://www.keszthelyiconsulting.com/ezustevek";
+  const shareUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/ezustevek`
+      : "https://www.keszthelyiconsulting.com/ezustevek";
 
-    const shareData = {
-      title: "Ezüstévek – 2026. november",
-      text: "Lapozd bele az Ezüstévek 2026. novemberi számába!",
-      url: shareUrl,
-    };
+  const shareText =
+    "Lapozd bele az Ezüstévek 2026. novemberi számába!";
 
+  const facebookUrl =
+    `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+
+  const whatsappUrl =
+    `https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`;
+
+  const emailUrl =
+    `mailto:?subject=${encodeURIComponent("Ezüstévek – 2026. november")}` +
+    `&body=${encodeURIComponent(`${shareText}\n\n${shareUrl}`)}`;
+
+  const copyShareLink = async () => {
     try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-        return;
-      }
-
       await navigator.clipboard.writeText(shareUrl);
       setShareStatus("Link kimásolva ✓");
+      window.setTimeout(() => setShareStatus(""), 1800);
+    } catch {
+      setShareStatus("A link nem másolható automatikusan");
+    }
+  };
 
-      window.setTimeout(() => {
-        setShareStatus("");
-      }, 1800);
+  const systemShare = async () => {
+    if (!navigator.share) {
+      await copyShareLink();
+      return;
+    }
+
+    try {
+      await navigator.share({
+        title: "Ezüstévek – 2026. november",
+        text: shareText,
+        url: shareUrl,
+      });
     } catch (error: any) {
-      if (error?.name === "AbortError") return;
-
-      try {
-        await navigator.clipboard.writeText(shareUrl);
-        setShareStatus("Link kimásolva ✓");
-
-        window.setTimeout(() => {
-          setShareStatus("");
-        }, 1800);
-      } catch {
-        setShareStatus("A link nem másolható automatikusan");
+      if (error?.name !== "AbortError") {
+        console.error(error);
       }
     }
   };
@@ -329,38 +337,101 @@ export default function EzustevekPage() {
               />
 
               {/* MEGOSZTÁS – SZIPORKA KÉPÉBE ÁGYAZVA */}
-              <button
-                type="button"
-                onClick={shareMagazine}
-                aria-label="Az Ezüstévek magazin megosztása"
-                title="Megosztás"
-                className="absolute bottom-4 right-4 flex items-center gap-2 rounded-full border border-[#d4ad71] bg-[#173b35]/95 px-4 py-2.5 text-[14px] font-semibold text-white shadow-[0_8px_22px_rgba(0,0,0,0.28)] backdrop-blur-sm transition hover:scale-[1.03] hover:bg-[#102e2a]"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  className="h-5 w-5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.9"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+              <div className="absolute bottom-4 right-4 z-20">
+                {shareOpen && (
+                  <div className="absolute bottom-14 right-0 w-[230px] rounded-[20px] border border-[#d8c29c] bg-[#fffaf3]/98 p-3 shadow-[0_16px_38px_rgba(0,0,0,0.28)] backdrop-blur">
+                    <p className="mb-2 px-2 text-[12px] font-semibold uppercase tracking-[0.14em] text-[#8a6335]">
+                      Megosztás
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <a
+                        href={facebookUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => setShareOpen(false)}
+                        className="flex items-center gap-2 rounded-xl bg-[#1877F2] px-3 py-2.5 text-[13px] font-semibold text-white transition hover:opacity-90"
+                      >
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-[18px] font-bold leading-none text-[#1877F2]">f</span>
+                        Facebook
+                      </a>
+
+                      <a
+                        href={whatsappUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => setShareOpen(false)}
+                        className="flex items-center gap-2 rounded-xl bg-[#25D366] px-3 py-2.5 text-[13px] font-semibold text-white transition hover:opacity-90"
+                      >
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full border border-white/70 text-[13px] font-bold">W</span>
+                        WhatsApp
+                      </a>
+
+                      <a
+                        href={emailUrl}
+                        onClick={() => setShareOpen(false)}
+                        className="flex items-center gap-2 rounded-xl border border-[#d8c29c] bg-white px-3 py-2.5 text-[13px] font-semibold text-[#173b35] transition hover:bg-[#f4eadc]"
+                      >
+                        <span className="text-[18px]">✉</span>
+                        E-mail
+                      </a>
+
+                      <button
+                        type="button"
+                        onClick={copyShareLink}
+                        className="flex items-center gap-2 rounded-xl border border-[#d8c29c] bg-white px-3 py-2.5 text-left text-[13px] font-semibold text-[#173b35] transition hover:bg-[#f4eadc]"
+                      >
+                        <span className="text-[18px]">🔗</span>
+                        Link
+                      </button>
+                    </div>
+
+                    {typeof navigator !== "undefined" && navigator.share && (
+                      <button
+                        type="button"
+                        onClick={systemShare}
+                        className="mt-2 w-full rounded-xl bg-[#173b35] px-3 py-2.5 text-[13px] font-semibold text-white transition hover:bg-[#102e2a]"
+                      >
+                        További megosztási lehetőségek
+                      </button>
+                    )}
+
+                    {shareStatus && (
+                      <p className="mt-2 text-center text-[12px] font-medium text-[#173b35]">
+                        {shareStatus}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => setShareOpen((open) => !open)}
+                  aria-expanded={shareOpen}
+                  aria-label="Megosztási lehetőségek"
+                  title="Megosztás"
+                  className="flex items-center gap-2 rounded-full border border-[#d4ad71] bg-[#173b35]/95 px-4 py-2.5 text-[14px] font-semibold text-white shadow-[0_8px_22px_rgba(0,0,0,0.28)] backdrop-blur-sm transition hover:scale-[1.03] hover:bg-[#102e2a]"
                 >
-                  <circle cx="18" cy="5" r="3" />
-                  <circle cx="6" cy="12" r="3" />
-                  <circle cx="18" cy="19" r="3" />
-                  <path d="M8.6 10.6 15.4 6.4" />
-                  <path d="m8.6 13.4 6.8 4.2" />
-                </svg>
+                  <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.9"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <circle cx="18" cy="5" r="3" />
+                    <circle cx="6" cy="12" r="3" />
+                    <circle cx="18" cy="19" r="3" />
+                    <path d="M8.6 10.6 15.4 6.4" />
+                    <path d="m8.6 13.4 6.8 4.2" />
+                  </svg>
 
-                <span>Megosztás</span>
-              </button>
-
-              {shareStatus && (
-                <div className="absolute bottom-16 right-4 rounded-full bg-black/80 px-3 py-1.5 text-[12px] font-medium text-white shadow-lg">
-                  {shareStatus}
-                </div>
-              )}
+                  <span>Megosztás</span>
+                </button>
+              </div>
             </div>
           </div>
 
