@@ -267,13 +267,18 @@ export default function EzustevekPage() {
   };
 
   const nativeShare = async () => {
-    if (!navigator.share) {
+    const nav = navigator as Navigator & {
+      share?: (data?: ShareData) => Promise<void>;
+    };
+
+    if (typeof nav.share !== "function") {
       await copyShareLink();
+      setShareOpen(false);
       return;
     }
 
     try {
-      await navigator.share({
+      await nav.share({
         title: shareTitle,
         text: shareText,
         url: shareUrl,
@@ -400,16 +405,14 @@ export default function EzustevekPage() {
                       Link másolása
                     </button>
 
-                    {typeof navigator !== "undefined" && navigator.share && (
-                      <button
-                        type="button"
-                        onClick={nativeShare}
-                        className="flex w-full items-center gap-3 rounded-[12px] px-3 py-2.5 text-left text-[14px] font-semibold text-[#173b35] transition hover:bg-[#efe6d8]"
-                      >
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[#c8b18e] bg-white text-[18px] text-[#173b35]">↗</span>
-                        További lehetőségek
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={nativeShare}
+                      className="flex w-full items-center gap-3 rounded-[12px] px-3 py-2.5 text-left text-[14px] font-semibold text-[#173b35] transition hover:bg-[#efe6d8]"
+                    >
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[#c8b18e] bg-white text-[18px] text-[#173b35]">↗</span>
+                      További lehetőségek
+                    </button>
                   </div>
                 )}
 
@@ -584,3 +587,5 @@ export default function EzustevekPage() {
     </main>
   );
 }
+
+
