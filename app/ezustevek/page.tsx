@@ -244,6 +244,48 @@ function MagazineReader() {
 }
 
 export default function EzustevekPage() {
+  const [shareStatus, setShareStatus] = useState("");
+
+  const shareMagazine = async () => {
+    const shareUrl =
+      typeof window !== "undefined"
+        ? window.location.href
+        : "https://www.keszthelyiconsulting.com/ezustevek";
+
+    const shareData = {
+      title: "Ezüstévek – 2026. november",
+      text: "Lapozd bele az Ezüstévek 2026. novemberi számába!",
+      url: shareUrl,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        return;
+      }
+
+      await navigator.clipboard.writeText(shareUrl);
+      setShareStatus("Link kimásolva ✓");
+
+      window.setTimeout(() => {
+        setShareStatus("");
+      }, 1800);
+    } catch (error: any) {
+      if (error?.name === "AbortError") return;
+
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        setShareStatus("Link kimásolva ✓");
+
+        window.setTimeout(() => {
+          setShareStatus("");
+        }, 1800);
+      } catch {
+        setShareStatus("A link nem másolható automatikusan");
+      }
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[#f7f2eb] text-[#24312e]">
 
@@ -276,14 +318,50 @@ export default function EzustevekPage() {
           </div>
 
           <div className="flex justify-center lg:sticky lg:top-6">
-            <Image
-              src="/ezustevek/Őszi olvasás az Ezüstévekkel.png"
-              alt="Sziporka az Ezüstévek magazint olvassa"
-              width={820}
-              height={1100}
-              priority
-              className="h-auto w-full max-w-[405px] object-contain"
-            />
+            <div className="relative w-full max-w-[405px]">
+              <Image
+                src="/ezustevek/Őszi olvasás az Ezüstévekkel.png"
+                alt="Sziporka az Ezüstévek magazint olvassa"
+                width={820}
+                height={1100}
+                priority
+                className="h-auto w-full object-contain"
+              />
+
+              {/* MEGOSZTÁS – SZIPORKA KÉPÉBE ÁGYAZVA */}
+              <button
+                type="button"
+                onClick={shareMagazine}
+                aria-label="Az Ezüstévek magazin megosztása"
+                title="Megosztás"
+                className="absolute bottom-4 right-4 flex items-center gap-2 rounded-full border border-[#d4ad71] bg-[#173b35]/95 px-4 py-2.5 text-[14px] font-semibold text-white shadow-[0_8px_22px_rgba(0,0,0,0.28)] backdrop-blur-sm transition hover:scale-[1.03] hover:bg-[#102e2a]"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.9"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <path d="M8.6 10.6 15.4 6.4" />
+                  <path d="m8.6 13.4 6.8 4.2" />
+                </svg>
+
+                <span>Megosztás</span>
+              </button>
+
+              {shareStatus && (
+                <div className="absolute bottom-16 right-4 rounded-full bg-black/80 px-3 py-1.5 text-[12px] font-medium text-white shadow-lg">
+                  {shareStatus}
+                </div>
+              )}
+            </div>
           </div>
 
         </div>
