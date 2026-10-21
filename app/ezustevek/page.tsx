@@ -603,7 +603,8 @@ export default function EzustevekPage() {
               <div className="mt-5 rounded-[18px] bg-[#efe6d8]/75 px-5 py-4">
                 <p className="text-[14px] font-bold text-[#173b35]">
              
-              
+         </p>
+                </div>     
         </div>
 
         {/* HIRDETÉSI LEHETŐSÉGEK */}
