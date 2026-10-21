@@ -53,7 +53,11 @@ export default function BooksPage() {
                 <div className={styles.priceRow}><span className={styles.price}>{book.price}</span><span className={styles.status}>{book.available ? "Megvásárolható" : "Vásárlás hamarosan"}</span></div>
                 <div className={styles.actions}>
                   <Link href={book.href} className={styles.primaryButton}>Bemutató és beleolvasás <span aria-hidden="true">→</span></Link>
-                  {book.available && <a href={book.googlePlayUrl} target="_blank" rel="noopener noreferrer" className={styles.purchaseLink}>Megvásárolom a Google Playen ↗</a>}
+                 {book.available && (
+  <Link href={book.orderHref} className={styles.purchaseLink}>
+    Megrendelem →
+  </Link>
+)}
                 </div>
               </div>
             </article>
