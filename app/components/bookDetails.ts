@@ -10,7 +10,7 @@ export type BookDetails = {
   href: string;
   price: string;
   isbn: string;
-  googlePlayUrl: string;
+  orderHref: string;
   available: boolean;
 };
 
@@ -28,10 +28,8 @@ export const bookDetails: BookDetails = {
   href: "/konyvek/hideghivasbol-ugyfel",
   price: "4 999 Ft",
   isbn: "978-615-02-6454-7",
-  googlePlayUrl:
-    "https://play.google.com/store/books/details?id=X7gWEgAAQBAJ&hl=hu&gl=HU",
-  // Enable only after the Hungarian storefront offers a verified purchase.
-  available: process.env.NEXT_PUBLIC_BOOK_GOOGLE_PLAY_AVAILABLE === "true",
+  orderHref: "/konyvek/megrendeles",
+available: false,
 };
 
 // Each new title has its own presentation, sample and purchase status.
