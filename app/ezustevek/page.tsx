@@ -602,19 +602,7 @@ export default function EzustevekPage() {
 
               <div className="mt-5 rounded-[18px] bg-[#efe6d8]/75 px-5 py-4">
                 <p className="text-[14px] font-bold text-[#173b35]">
-                  Számlát kérsz a befizetésről?
-                </p>
-                <p className="mt-2 text-[13px] leading-6 text-[#64594f]">
-                  Természetesen van rá lehetőség. Írd meg e-mailben a
-                  számlázási nevet és címet, valamint azt az összeget és nevet,
-                  amelyről az utalás érkezett.
-                </p>
-
-                <a
-                  href="mailto:info@keszthelyiconsulting.com?subject=Ezüstévek%20támogatás%20-%20számlaigény&body=Számlázási%20név%3A%0ASzámlázási%20cím%3A%0AUtaló%20neve%3A%0AÖsszeg%3A%0A"
-                  className="mt-4 inline-flex items-center justify-center rounded-full border border-[#173b35] px-5 py-2.5 text-[13px] font-bold text-[#173b35] transition hover:bg-[#173b35] hover:text-white"
-                >
-                  Számlát kérek
+             
                 </a>
               </div>
             </div>
