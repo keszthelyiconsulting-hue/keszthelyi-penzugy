@@ -518,6 +518,239 @@ export default function EzustevekPage() {
           </div>
         </div>
 
+
+        {/* OLVASÓI TÁMOGATÁS */}
+        <div
+          id="tamogatas"
+          className="mt-14 overflow-hidden rounded-[28px] border border-[#d9c9b7] bg-[#fffaf3] shadow-[0_18px_45px_rgba(61,45,30,0.08)]"
+        >
+          <div className="grid gap-0 lg:grid-cols-[0.95fr_1.05fr]">
+            <div className="bg-[#173b35] px-7 py-8 text-white md:px-10 md:py-10">
+              <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#e2bc7e]">
+                Olvasói támogatás
+              </p>
+
+              <h2
+                className="mt-3 text-[32px] font-normal leading-tight md:text-[38px]"
+                style={{
+                  fontFamily: 'Georgia, "Times New Roman", serif',
+                }}
+              >
+                Támogasd az Ezüstéveket
+              </h2>
+
+              <p className="mt-5 max-w-[560px] text-[15px] leading-7 text-white/85">
+                Az Ezüstévek minden lapszáma ingyenesen olvasható. Ha
+                értékesnek találod a magazint, önkéntes olvasói támogatásoddal
+                hozzájárulhatsz ahhoz, hogy újabb tartalmas, igényes lapszámok
+                készülhessenek.
+              </p>
+
+              <p className="mt-4 max-w-[560px] text-[14px] leading-6 text-white/70">
+                A támogatás összege szabadon választható, és természetesen nem
+                feltétele az olvasásnak.
+              </p>
+            </div>
+
+            <div className="flex flex-col justify-center px-7 py-8 md:px-10 md:py-10">
+              <p className="text-[18px] font-semibold text-[#173b35]">
+                Banki átutalással azonnal támogathatod
+              </p>
+
+              <p className="mt-3 text-[14px] leading-7 text-[#64594f]">
+                A támogatás összege szabadon választható. Az átutaláshoz az
+                alábbi adatokat használd:
+              </p>
+
+              <div className="mt-5 overflow-hidden rounded-[20px] border border-[#d7c19b] bg-white">
+                <div className="border-b border-[#eadfce] px-5 py-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#a87330]">
+                    Kedvezményezett
+                  </p>
+                  <p className="mt-1 text-[17px] font-bold text-[#173b35]">
+                    Keszthelyi Andrea
+                  </p>
+                </div>
+
+                <div className="border-b border-[#eadfce] px-5 py-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#a87330]">
+                    Bank
+                  </p>
+                  <p className="mt-1 text-[16px] font-semibold text-[#173b35]">
+                    Erste Bank
+                  </p>
+                </div>
+
+                <div className="border-b border-[#eadfce] px-5 py-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#a87330]">
+                    Bankszámlaszám
+                  </p>
+                  <p className="mt-1 break-all font-mono text-[16px] font-bold tracking-[0.03em] text-[#173b35] md:text-[17px]">
+                    11600006-00000000-93954691
+                  </p>
+                </div>
+
+                <div className="px-5 py-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#a87330]">
+                    Közlemény
+                  </p>
+                  <p className="mt-1 text-[15px] font-semibold text-[#173b35]">
+                    Ezüstévek olvasói támogatás
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-5 rounded-[18px] bg-[#efe6d8]/75 px-5 py-4">
+                <p className="text-[14px] font-bold text-[#173b35]">
+                  Számlát kérsz a befizetésről?
+                </p>
+                <p className="mt-2 text-[13px] leading-6 text-[#64594f]">
+                  Természetesen van rá lehetőség. Írd meg e-mailben a
+                  számlázási nevet és címet, valamint azt az összeget és nevet,
+                  amelyről az utalás érkezett.
+                </p>
+
+                <a
+                  href="mailto:info@keszthelyiconsulting.com?subject=Ezüstévek%20támogatás%20-%20számlaigény&body=Számlázási%20név%3A%0ASzámlázási%20cím%3A%0AUtaló%20neve%3A%0AÖsszeg%3A%0A"
+                  className="mt-4 inline-flex items-center justify-center rounded-full border border-[#173b35] px-5 py-2.5 text-[13px] font-bold text-[#173b35] transition hover:bg-[#173b35] hover:text-white"
+                >
+                  Számlát kérek
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* HIRDETÉSI LEHETŐSÉGEK */}
+        <div id="hirdetes" className="mt-14 border-t border-[#dfd3c5] pt-10">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#a87330]">
+            Hirdetési lehetőségek
+          </p>
+
+          <div className="mt-2 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <h2
+                className="text-[32px] font-normal text-[#173b35]"
+                style={{
+                  fontFamily: 'Georgia, "Times New Roman", serif',
+                }}
+              >
+                Hirdess az Ezüstévekben
+              </h2>
+
+              <p className="mt-4 max-w-[820px] text-[15px] leading-7 text-[#64594f]">
+                Az Ezüstévek célzottan szól azokhoz az olvasókhoz, akik számára
+                fontos az egészség, a biztonság, az aktív élet, az otthon, az
+                utazás, a pénzügyi tudatosság és a minőségi szolgáltatások.
+                Lapszámonként korlátozott számú hirdetési helyet biztosítunk,
+                hogy a magazin megőrizze igényes, tartalomközpontú jellegét.
+              </p>
+            </div>
+
+            <a
+              href="mailto:info@keszthelyiconsulting.com?subject=Hirdetés%20az%20Ezüstévekben"
+              className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#173b35] px-6 py-3 text-[14px] font-bold text-white transition hover:bg-[#102e2a]"
+            >
+              Hirdetni szeretnék
+            </a>
+          </div>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {[
+              {
+                title: "1/4 oldal",
+                size: "kb. 90 × 130 mm",
+                price: "15 000 Ft",
+                place: "Belső oldalak",
+              },
+              {
+                title: "1/2 oldal",
+                size: "kb. 190 × 130 mm",
+                price: "25 000 Ft",
+                place: "Belső oldalak",
+              },
+              {
+                title: "Teljes oldal",
+                size: "kb. 190 × 270 mm",
+                price: "45 000 Ft",
+                place: "Belső oldalak",
+              },
+              {
+                title: "Kiemelt teljes oldal",
+                size: "kb. 190 × 270 mm",
+                price: "55 000 Ft",
+                place: "Az első harmadban",
+              },
+              {
+                title: "Belső hátsó borító",
+                size: "teljes oldal",
+                price: "65 000 Ft",
+                place: "Prémium hely",
+              },
+              {
+                title: "Külső hátlap",
+                size: "teljes oldal",
+                price: "80 000 Ft",
+                place: "Prémium hely",
+              },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="rounded-[20px] border border-[#dccdbd] bg-white p-6 shadow-sm"
+              >
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#a87330]">
+                  {item.place}
+                </p>
+
+                <h3 className="mt-2 text-[20px] font-bold text-[#173b35]">
+                  {item.title}
+                </h3>
+
+                <p className="mt-2 text-[14px] text-[#71665c]">{item.size}</p>
+
+                <p className="mt-5 text-[24px] font-bold text-[#8f2630]">
+                  {item.price}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-7 grid gap-5 rounded-[22px] border border-[#dbcab7] bg-[#efe6d8]/65 p-6 md:grid-cols-2 md:p-7">
+            <div>
+              <p className="text-[16px] font-bold text-[#173b35]">
+                Hirdetési helyek a lapszámban
+              </p>
+
+              <p className="mt-3 text-[14px] leading-7 text-[#64594f]">
+                Egy hirdetési helyet az első harmadban, egyet a középső
+                részben, kettőt az utolsó harmadban biztosítunk. Emellett külön
+                foglalható a belső hátsó borító és a külső hátlap. A pontos
+                oldalszámot mindig a lapszám tartalmi töréspontjaihoz igazítjuk.
+              </p>
+            </div>
+
+            <div>
+              <p className="text-[16px] font-bold text-[#173b35]">
+                Hirdetési anyag
+              </p>
+
+              <p className="mt-3 text-[14px] leading-7 text-[#64594f]">
+                Jó minőségű JPG, PNG vagy PDF formátumot kérünk. Teljes oldalas
+                hirdetésnél javasolt legalább
+                <strong className="text-[#173b35]"> 2000 × 2800 px</strong>
+                felbontás. A végleges elhelyezést a szerkesztőség a lapszám
+                tartalmi szerkezetéhez igazíthatja.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-5 rounded-[18px] border border-[#d7c19b] bg-[#fffaf3] px-6 py-5 text-[14px] leading-7 text-[#64594f]">
+            <strong className="text-[#173b35]">Több megjelenés esetén:</strong>{" "}
+            3 alkalomra 10%, 6 alkalomra 15%, 12 alkalomra 20% kedvezményt
+            biztosítunk.
+          </div>
+        </div>
+
         {/* IMPRESSZUM */}
         <div className="mt-14 border-t border-[#dfd3c5] pt-9">
           <div className="grid gap-8 md:grid-cols-3">
@@ -587,5 +820,3 @@ export default function EzustevekPage() {
     </main>
   );
 }
-
-
