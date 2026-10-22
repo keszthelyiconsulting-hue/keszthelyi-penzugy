@@ -28,11 +28,18 @@ function Purchase({ compact = false }: { compact?: boolean }) {
     <div className={compact ? styles.purchaseInline : styles.purchaseCard}>
       <div><span className={styles.eyebrow}>Magyar nyelvű e-könyv</span><p className={styles.price}>{bookDetails.price}</p></div>
       <div className={styles.purchaseAction}>
-        {bookDetails.available ? (
-          <a className={styles.primaryButton} href={bookDetails.googlePlayUrl} target="_blank" rel="noopener noreferrer">Megvásárolom a Google Playen <span aria-hidden="true">↗</span></a>
-        ) : (
-          <><span className={styles.comingSoon}>Hamarosan megvásárolható</span><p>A Google Play Könyvekben lesz elérhető.</p></>
-        )}
+       {bookDetails.available ? (
+  <Link className={styles.primaryButton} href="/konyvek">
+    Megrendelés – 4 999 Ft <span aria-hidden="true">→</span>
+  </Link>
+) : (
+  <>
+    <span className={styles.comingSoon}>
+      Hamarosan megvásárolható
+    </span>
+    <p>Megrendelés közvetlenül a Keszthelyi Consulting oldalán.</p>
+  </>
+)}
       </div>
     </div>
   );
@@ -51,8 +58,17 @@ export default function BookPage() {
     description,
     url: canonical,
     image: "https://www.keszthelyiconsulting.com/konyv/borito.webp",
-    ...(bookDetails.available ? { offers: { "@type": "Offer", price: "4999", priceCurrency: "HUF", availability: "https://schema.org/InStock", url: bookDetails.googlePlayUrl } } : {}),
-  };
+    ...(bookDetails.available
+  ? {
+      offers: {
+        "@type": "Offer",
+        price: "4999",
+        priceCurrency: "HUF",
+        availability: "https://schema.org/InStock",
+        url: canonical,
+      },
+    }
+  : {}),
   return (
     <main className={styles.page}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} />
