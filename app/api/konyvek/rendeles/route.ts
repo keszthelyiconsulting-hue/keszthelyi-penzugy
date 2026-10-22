@@ -89,7 +89,12 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error || !data) {
-      console.error("Könyvrendelés mentési hiba:", error?.code);
+      console.error("Könyvrendelés mentési hiba:", {
+        code: error?.code ?? "NINCS_HIBAKOD",
+        message: error?.message ?? "Nem érkezett adat",
+        details: error?.details ?? null,
+        hint: error?.hint ?? null,
+      });
 
       return NextResponse.json(
         { error: "A rendelést nem sikerült rögzíteni." },
@@ -109,10 +114,17 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch {
+  } catch (err) {
+    console.error("Könyvrendelés váratlan szerverhiba:", {
+      message:
+        err instanceof Error
+          ? err.message
+          : "Ismeretlen hiba",
+    });
+
     return NextResponse.json(
-      { error: "Érvénytelen rendelési kérés." },
-      { status: 400 }
+      { error: "A rendelési kérés feldolgozása nem sikerült." },
+      { status: 500 }
     );
   }
 }
