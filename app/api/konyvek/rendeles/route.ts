@@ -1,11 +1,17 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { sendEmail } from "../../../../lib/email";
 
 export const runtime = "nodejs";
 
 const BOOK_ISBN = "978-615-02-6454-7";
+const BOOK_TITLE = "Hideghívásból ügyfél";
 const BOOK_PRICE = 4999;
+
+const OWNER_EMAIL = "info@keszthelyiconsulting.com";
+const BENEFICIARY = "Keszthelyi Andrea";
+const BANK_ACCOUNT = "11600006-00000000-93954691";
 
 type OrderInput = {
   customerName?: unknown;
@@ -35,8 +41,7 @@ export async function POST(request: NextRequest) {
     const body = (await request.json()) as OrderInput;
 
     const customerName = cleanText(body.customerName, 150);
-    const customerEmail = cleanText(body.customerEmail, 254)
-      .toLowerCase();
+    const customerEmail = cleanText(body.customerEmail, 254).toLowerCase();
     const billingName = cleanText(body.billingName, 150);
     const billingAddress = cleanText(body.billingAddress, 500);
     const taxNumber = cleanText(body.taxNumber, 30);
@@ -65,7 +70,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Kizárólag szerveroldalon használható jogosultság.
     const supabase = createClient(supabaseUrl, serviceRoleKey, {
       auth: {
         persistSession: false,
@@ -89,12 +93,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error || !data) {
-      console.error("Könyvrendelés mentési hiba:", {
-        code: error?.code ?? "NINCS_HIBAKOD",
-        message: error?.message ?? "Nem érkezett adat",
-        details: error?.details ?? null,
-        hint: error?.hint ?? null,
-      });
+      console.error("Könyvrendelés mentési hiba:", error?.code);
 
       return NextResponse.json(
         { error: "A rendelést nem sikerült rögzíteni." },
@@ -102,28 +101,106 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const paymentReference = data.payment_reference;
+
+    const customerMessage = [
+      `Kedves ${customerName}!`,
+      "",
+      `Köszönjük, hogy megrendelte a(z) ${BOOK_TITLE} című e-könyvet!`,
+      "",
+      "RENDELÉSI ADATOK",
+      `Könyv: ${BOOK_TITLE}`,
+      `Fizetendő: ${data.price_huf} Ft`,
+      `Rendelési azonosító: ${paymentReference}`,
+      "",
+      "BANKI ÁTUTALÁS",
+      `Kedvezményezett: ${BENEFICIARY}`,
+      `Bankszámlaszám: ${BANK_ACCOUNT}`,
+      `Összeg: ${data.price_huf} Ft`,
+      `Közlemény: ${paymentReference}`,
+      "",
+      "Kérjük, az átutalás közleményébe pontosan",
+      "a fenti rendelési azonosítót írja.",
+      "",
+      "A könyv online olvasási hozzáférését",
+      "a befizetés ellenőrzése után aktiváljuk.",
+      "A befizetés nem aktiválja automatikusan a hozzáférést.",
+      "",
+      "Üdvözlettel:",
+      "Keszthelyi Consulting",
+    ].join("\n");
+
+    const ownerMessage = [
+      "ÚJ E-KÖNYV RENDELÉS",
+      "",
+      `Könyv: ${BOOK_TITLE}`,
+      `Rendelési azonosító: ${paymentReference}`,
+      `Rendelés UUID: ${data.id}`,
+      `Összeg: ${data.price_huf} Ft`,
+      "Állapot: Fizetésre vár",
+      "",
+      "VÁSÁRLÓ",
+      `Név: ${customerName}`,
+      `E-mail: ${customerEmail}`,
+      "",
+      "SZÁMLÁZÁSI ADATOK",
+      `Számlázási név: ${billingName}`,
+      `Számlázási cím: ${billingAddress}`,
+      `Adószám: ${taxNumber || "Nincs megadva"}`,
+      "",
+      `Átutalási közlemény: ${paymentReference}`,
+      "",
+      "A könyvhozzáférést csak a befizetés",
+      "ellenőrzése után aktiváld.",
+    ].join("\n");
+
+    // A rendelés már az adatbázisban van.
+    // Levélküldési hiba miatt nem kérünk új rendelést.
+    const emailResults = await Promise.allSettled([
+      sendEmail({
+        to: customerEmail,
+        subject: `Rendelés visszaigazolása – ${BOOK_TITLE}`,
+        text: customerMessage,
+      }),
+      sendEmail({
+        to: OWNER_EMAIL,
+        subject: `Új könyvrendelés – ${paymentReference}`,
+        text: ownerMessage,
+        replyTo: customerEmail,
+      }),
+    ]);
+
+    const emailSent = emailResults.every(
+      (result) => result.status === "fulfilled"
+    );
+
+    emailResults.forEach((result, index) => {
+      if (result.status === "rejected") {
+        console.error(
+          `Könyvrendelési e-mail hiba (${index === 0 ? "vásárló" : "üzemeltető"}):`,
+          result.reason
+        );
+      }
+    });
+
     return NextResponse.json(
       {
         success: true,
         orderId: data.id,
-        paymentReference: data.payment_reference,
+        paymentReference,
         amount: data.price_huf,
         currency: "HUF",
+        emailSent,
         message:
           "A rendelést rögzítettük. A könyv olvasási hozzáférése csak az átutalás ellenőrzése után aktiválható.",
       },
       { status: 201 }
     );
-  } catch (err) {
-    console.error("Könyvrendelés váratlan szerverhiba:", {
-      message:
-        err instanceof Error
-          ? err.message
-          : "Ismeretlen hiba",
-    });
+  } catch (error) {
+    console.error("Könyvrendelési API-hiba:", error);
 
     return NextResponse.json(
-      { error: "A rendelési kérés feldolgozása nem sikerült." },
+      { error: "A rendelési kérés feldolgozása sikertelen." },
       { status: 500 }
     );
   }
