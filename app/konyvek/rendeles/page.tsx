@@ -223,12 +223,41 @@ export default function BookOrderPage() {
               hogy azonosítani tudjuk a rendelésedet.
             </p>
 
-            <p style={{ lineHeight: 1.7 }}>
-              Az utaláshoz szükséges bankszámlaadatokat
-              külön tájékoztatásban adjuk meg.
-              A könyvhöz való hozzáférés a fizetés
-              ellenőrzése után aktiválható.
-            </p>
+            <div
+              style={{
+                padding: 20,
+                marginTop: 20,
+                border: "1px solid #c9a768",
+                borderRadius: 10,
+                background: "#252017",
+                lineHeight: 1.8,
+              }}
+            >
+              <h3 style={{ color: "#e8c985", marginTop: 0 }}>
+                Banki átutalás adatai
+              </h3>
+              <p><strong>Kedvezményezett:</strong> Keszthelyi Andrea</p>
+              <p>
+                <strong>Bankszámlaszám:</strong>{" "}
+                <span style={{ overflowWrap: "anywhere" }}>
+                  11600006-00000000-93954691
+                </span>
+              </p>
+              <p>
+                <strong>Fizetendő összeg:</strong>{" "}
+                {result.amount.toLocaleString("hu-HU")} Ft
+              </p>
+              <p>
+                <strong>Közlemény:</strong>{" "}
+                <span style={{ overflowWrap: "anywhere" }}>
+                  {result.paymentReference}
+                </span>
+              </p>
+              <p style={{ color: "#d7b979", fontSize: 14 }}>
+                A könyvhöz való hozzáférés az átutalás
+                beérkezésének ellenőrzése után aktiválható.
+              </p>
+            </div>
 
             <p style={{ color: "#c9c1b4", fontSize: 13 }}>
               Rendelési azonosító: {result.orderId}
