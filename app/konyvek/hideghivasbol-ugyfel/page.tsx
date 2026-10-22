@@ -69,6 +69,7 @@ export default function BookPage() {
       },
     }
   : {}),
+   }; 
   return (
     <main className={styles.page}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} />
