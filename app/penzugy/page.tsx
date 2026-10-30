@@ -67,7 +67,7 @@ subtitle: "Új lehetőségek az otthonteremtéshez.",
 description:
   "A Wekerle Plusz finanszírozási lehetőségeinek áttekintése az egyéni jogosultság és az otthonteremtési cél alapján.",
 href: "/penzugy/otthonteremtes/otthon-start",
-image: "/finance-card-otthon-start.png",
+image: "/finance-card-wekerle-plusz.png?",
 
   },
   {
