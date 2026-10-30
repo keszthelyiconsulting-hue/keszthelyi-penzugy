@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Hideghívásból ügyfél – Keszthelyi Andrea",
     description,
-    url: canonical,
+    url: "https://play.google.com/store/books/details?id=X7gWEgAAQBAJ",
     type: "book",
     locale: "hu_HU",
     images: [{ url: "https://www.keszthelyiconsulting.com/konyv/borito.webp", width: 1049, height: 1489, alt: "Hideghívásból ügyfél – könyvborító" }],
