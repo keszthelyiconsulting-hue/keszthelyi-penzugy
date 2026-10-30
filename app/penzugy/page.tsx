@@ -11,7 +11,7 @@ const movingTopics = [
   "Lakáshitel",
   "Lakossági Lízing",
   "Hitelkiváltás",
-  "Otthon Start",
+  "Wekerle Plusz",
   "CSOK Plusz",
   "Babaváró",
   "Munkáshitel",
