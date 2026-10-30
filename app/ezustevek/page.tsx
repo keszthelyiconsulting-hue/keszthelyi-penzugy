@@ -335,6 +335,7 @@ export default function EzustevekPage() {
                 </button>
               </div>
             </div>
+            </div>
             <div className="max-w-[760px] text-center md:text-left">
               <h2 className="text-[25px] font-normal leading-tight text-[#173b35] md:text-[32px]" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
                 Az élet minden korban tartogat újdonságokat!
