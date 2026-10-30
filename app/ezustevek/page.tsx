@@ -228,10 +228,11 @@ export default function EzustevekPage() {
 
       {/* LAPOZHATÓ MAGAZIN + SZIPORKA */}
       <section className="mx-auto max-w-[1380px] px-5 py-9 md:px-8 lg:py-12">
-        {/* SZIPORKA FENT, A MAGAZINNAK TELJES SZÉLESSÉG */}
-        <div className="mb-8 flex flex-col items-center gap-3">
-          <p className="text-center text-[14px] font-semibold uppercase tracking-[0.15em] text-[#a87330]">Lapozz bele az Ezüstévekbe!</p>
-          <div className="flex justify-center">
+        {/* SZIPORKA BAL OLDALT, BEMUTATKOZÁS JOBB OLDALT */}
+        <div className="mb-8">
+          <p className="mb-6 text-center text-[14px] font-semibold uppercase tracking-[0.15em] text-[#a87330]">Lapozz bele az Ezüstévekbe!</p>
+          <div className="grid items-center gap-7 md:grid-cols-[minmax(0,250px)_minmax(0,1fr)] md:gap-10 lg:gap-14">
+            <div className="flex justify-center md:justify-start">
             <div className="relative w-full max-w-[210px]">
               <Image
                 src="/ezustevek/Őszi olvasás az Ezüstévekkel.png"
@@ -333,6 +334,19 @@ export default function EzustevekPage() {
                   <span>Megosztás</span>
                 </button>
               </div>
+            </div>
+            <div className="max-w-[760px] text-center md:text-left">
+              <h2 className="text-[25px] font-normal leading-tight text-[#173b35] md:text-[32px]" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
+                Az élet minden korban tartogat újdonságokat!
+              </h2>
+              <p className="mt-4 text-[15px] leading-7 text-[#4d5a51]">
+                Az <strong className="text-[#173b35]">Ezüstévek</strong> ingyenes, online lapozható életmódmagazin, elsősorban az 50 év feletti korosztálynak, de mindenkinek, aki kíváncsi a világra.
+              </p>
+              <p className="mt-3 text-[15px] leading-7 text-[#4d5a51]">
+                Egészség, otthon, pénzügyek, kultúra, érdekes történetek és hasznos tanácsok – mindaz, ami tartalmasabbá teheti a mindennapokat.
+              </p>
+              <p className="mt-4 text-[17px] font-semibold italic text-[#a87330]">Aktív évek. Teljes élet.</p>
+              <p className="mt-2 text-[14px] text-[#64594f]">Olvasd ingyenesen, és oszd meg másokkal is!</p>
             </div>
           </div>
         </div>
