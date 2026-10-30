@@ -26,12 +26,6 @@ function MagazineReader() {
     const St = (window as any).St;
     if (!St?.PageFlip) return;
 
-    if (pageFlipRef.current) {
-      try {
-        pageFlipRef.current.destroy();
-      } catch {}
-    }
-
     const isSmall = window.innerWidth < 900;
     const pageWidth = fullscreen ? 520 : isSmall ? 320 : 420;
     const pageHeight = Math.round(pageWidth * 1.414);
@@ -67,6 +61,9 @@ function MagazineReader() {
     pageFlipRef.current = pageFlip;
 
     return () => {
+      if (pageFlipRef.current === pageFlip) {
+        pageFlipRef.current = null;
+      }
       try {
         pageFlip.destroy();
       } catch {}
@@ -92,6 +89,15 @@ function MagazineReader() {
     return () => {
       document.body.style.overflow = "";
     };
+  }, [fullscreen]);
+
+  useEffect(() => {
+    if (!fullscreen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setFullscreen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, [fullscreen]);
 
   const previousPage = () => {
@@ -233,13 +239,9 @@ function MagazineReader() {
         onLoad={() => setFlipReady(true)}
       />
 
-      {reader}
-
-      {fullscreen && (
-        <div className="fixed inset-0 z-[9999]">
-          {reader}
-        </div>
-      )}
+      <div className={fullscreen ? "fixed inset-0 z-[9999] bg-[#171411]" : "relative"}>
+        {reader}
+      </div>
     </>
   );
 }
