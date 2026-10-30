@@ -61,12 +61,14 @@ const loans: ProductCard[] = [
     image: "/finance-card-hitelkivaltas.png",
   },
   {
-    title: "Otthon Start",
-    subtitle: "Első otthon kedvezőbb feltételekkel.",
-    description:
-      "Az Otthon Start lehetőségeinek áttekintése jogosultság és finanszírozási cél alapján.",
-    href: "/penzugy/otthonteremtes/otthon-start",
-    image: "/finance-card-otthon-start.png",
+    
+title: "Wekerle Plusz",
+subtitle: "Új lehetőségek az otthonteremtéshez.",
+description:
+  "A Wekerle Plusz finanszírozási lehetőségeinek áttekintése az egyéni jogosultság és az otthonteremtési cél alapján.",
+href: "/penzugy/otthonteremtes/otthon-start",
+image: "/finance-card-otthon-start.png",
+
   },
   {
     title: "CSOK Plusz",
