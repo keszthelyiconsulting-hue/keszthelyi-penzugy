@@ -30,16 +30,15 @@ function Purchase({ compact = false }: { compact?: boolean }) {
       <div className={styles.purchaseAction}>
        {bookDetails.available ? (
   <Link className={styles.primaryButton} href="/konyvek">
-    Megrendelés – 4 999 Ft <span aria-hidden="true">→</span>
-  </Link>
-) : (
-  <>
-    <span className={styles.comingSoon}>
-      Hamarosan megvásárolható
-    </span>
-    <p>Megrendelés közvetlenül a Keszthelyi Consulting oldalán.</p>
-  </>
-)}
+   {<a
+  className={styles.primaryButton}
+  href="https://play.google.com/store/books/details?id=X7gWEgAAQBAJ"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  Megvásárlás a Google Playen – 4 999 Ft
+  <span aria-hidden="true"> →</span>
+</a>}
       </div>
     </div>
   );
