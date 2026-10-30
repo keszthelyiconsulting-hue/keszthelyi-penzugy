@@ -208,19 +208,7 @@ export default function EzustevekPage() {
             </Link>
           </div>
 
-          <div
-            className="justify-self-center whitespace-nowrap leading-none text-white"
-            style={{
-              fontFamily:
-                '"Segoe Script", "Lucida Handwriting", "Apple Chancery", "Brush Script MT", cursive',
-              fontSize: "clamp(46px, 5vw, 68px)",
-              fontWeight: 400,
-              letterSpacing: "-0.035em",
-              textShadow: "0 1px 0 rgba(255,255,255,0.08)",
-            }}
-          >
-            Ezüstévek
-          </div>
+         
 
           <div aria-hidden="true" />
         </div>
