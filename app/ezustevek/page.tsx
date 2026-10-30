@@ -24,15 +24,15 @@ function MagazineReader() {
     const St = (window as any).St;
     if (!St?.PageFlip) return;
     const element = bookRef.current;
-    const pageWidth = window.innerWidth < 900 ? 320 : 420;
+    const pageWidth = window.innerWidth < 900 ? 320 : 520;
     const flip = new St.PageFlip(element, {
       width: pageWidth,
       height: Math.round(pageWidth * 1.414),
       size: "stretch",
       minWidth: 260,
-      maxWidth: 470,
+      maxWidth: 590,
       minHeight: 368,
-      maxHeight: 665,
+      maxHeight: 835,
       showCover: true,
       usePortrait: false,
       autoSize: true,
@@ -90,7 +90,7 @@ function MagazineReader() {
         onReady={() => setFlipReady(true)}
       />
       <div className="relative w-full">
-        <div className="relative flex min-h-[620px] items-center justify-center overflow-hidden rounded-[24px] bg-[#e4dbcf] px-14 py-5 shadow-[0_22px_60px_rgba(0,0,0,0.18)]">
+        <div className="relative flex min-h-[650px] items-center justify-center overflow-hidden rounded-[24px] bg-[#e4dbcf] px-14 py-5 shadow-[0_22px_60px_rgba(0,0,0,0.18)]">
           {currentPage > 0 && (
             <button type="button" onClick={() => pageFlipRef.current?.flipPrev()} aria-label="Előző oldal" className="absolute left-2 top-1/2 z-30 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#c7b18e] bg-[#fffaf2]/95 text-[32px] leading-none text-[#173b35] shadow-lg">‹</button>
           )}
@@ -228,14 +228,11 @@ export default function EzustevekPage() {
 
       {/* LAPOZHATÓ MAGAZIN + SZIPORKA */}
       <section className="mx-auto max-w-[1380px] px-5 py-9 md:px-8 lg:py-12">
-        <div className="grid items-start gap-9 lg:grid-cols-[1.45fr_0.55fr] lg:gap-10">
-
-          <div className="min-w-0">
-            <MagazineReader />
-          </div>
-
-          <div className="flex justify-center lg:sticky lg:top-6">
-            <div className="relative w-full max-w-[405px]">
+        {/* SZIPORKA FENT, A MAGAZINNAK TELJES SZÉLESSÉG */}
+        <div className="mb-8 flex flex-col items-center gap-3">
+          <p className="text-center text-[14px] font-semibold uppercase tracking-[0.15em] text-[#a87330]">Lapozz bele az Ezüstévekbe!</p>
+          <div className="flex justify-center">
+            <div className="relative w-full max-w-[210px]">
               <Image
                 src="/ezustevek/Őszi olvasás az Ezüstévekkel.png"
                 alt="Sziporka az Ezüstévek magazint olvassa"
@@ -338,7 +335,10 @@ export default function EzustevekPage() {
               </div>
             </div>
           </div>
+        </div>
 
+        <div className="w-full min-w-0">
+          <MagazineReader />
         </div>
 
         {/* ISSN */}
