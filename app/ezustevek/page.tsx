@@ -208,7 +208,19 @@ export default function EzustevekPage() {
             </Link>
           </div>
 
-         
+          {/* SZÖVEGES EZÜSTÉVEK LOGÓ – NEM KÉP */}
+          <div className="justify-self-center text-center" aria-label="Ezüstévek – Aktív évek. Teljes élet.">
+            <div
+              className="whitespace-nowrap text-[clamp(29px,4.2vw,58px)] font-bold italic leading-[1.05] tracking-[-0.055em]"
+              style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
+            >
+              <span className="text-[#b9d0b4]">Ezüst</span><span className="text-[#d5a54e]">évek</span>
+              <span className="ml-1 inline-block align-top text-[0.45em] not-italic text-[#d5a54e]">❧</span>
+            </div>
+            <p className="mt-1 text-[clamp(9px,1vw,13px)] font-medium italic tracking-[0.08em] text-[#e3c48b]">
+              Aktív évek. Teljes élet.
+            </p>
+          </div>
 
           <div aria-hidden="true" />
         </div>
