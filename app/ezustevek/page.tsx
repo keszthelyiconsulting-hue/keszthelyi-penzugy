@@ -134,6 +134,19 @@ function MagazineReader() {
 export default function EzustevekPage() {
   const [shareOpen, setShareOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
+  const [visitCount, setVisitCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/ezustevek-latogatas", { method: "POST", cache: "no-store" })
+      .then((response) => {
+        if (!response.ok) throw new Error("Nem érhető el a számláló");
+        return response.json();
+      })
+      .then((data: { count?: number }) => {
+        if (typeof data.count === "number") setVisitCount(data.count);
+      })
+      .catch(() => {});
+  }, []);
 
   const shareUrl =
     typeof window !== "undefined"
@@ -365,6 +378,13 @@ export default function EzustevekPage() {
           <span>2026. november</span>
           <span>•</span>
           <span>1. évfolyam • 1. szám</span>
+        </div>
+
+        {/* LÁTOGATOTTSÁG AZ ISSN ALATT */}
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-[14px] text-[#173b35]" aria-live="polite">
+          <span aria-hidden="true">◉</span>
+          <span>Az Ezüstévek oldalának megnyitásai:</span>
+          <strong className="tabular-nums">{visitCount === null ? "—" : visitCount.toLocaleString("hu-HU")}</strong>
         </div>
 
         {/* LAPSZÁMOK */}
