@@ -28,8 +28,8 @@ export const bookDetails: BookDetails = {
   href: "/konyvek/hideghivasbol-ugyfel",
   price: "4 999 Ft",
   isbn: "978-615-02-6454-7",
-  orderHref: "/konyvek/megrendeles",
-available: false,
+  orderHref: "https://play.google.com/store/books/details?id=X7gWEgAAQBAJ",
+available: true,
 };
 
 // Each new title has its own presentation, sample and purchase status.
