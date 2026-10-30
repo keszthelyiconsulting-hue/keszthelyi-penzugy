@@ -19,7 +19,7 @@ import {
   WalletCards,
 } from "lucide-react";
 
-export default function OtthonStartPage() {
+export default function WekerlePlusPage() {
   const [consent, setConsent] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
@@ -135,11 +135,11 @@ export default function OtthonStartPage() {
               </div>
 
               <h1 className="max-w-4xl text-4xl font-semibold leading-tight sm:text-5xl lg:text-7xl">
-                Otthon Start
+                Wekerle Plusz
               </h1>
 
               <p className="mt-7 max-w-2xl text-lg leading-8 text-neutral-300 sm:text-xl">
-                Első saját otthon megszerzéséhez fix 3%-os kamattal, akár 50 millió forintos hitelösszeggel és legfeljebb 25 éves futamidővel.
+                Első otthon vásárlásához vagy építéséhez akár 50 millió Ft kölcsön, legfeljebb 25 évre. Új lakásnál legfeljebb fix 3%, használt lakásnál legfeljebb fix 5% éves kamattal.
               </p>
 
               <div className="mt-9 flex flex-wrap gap-4">
@@ -167,18 +167,18 @@ export default function OtthonStartPage() {
                 </div>
 
                 <h2 className="text-2xl font-semibold">
-                  Fix 3%. Első otthon. Hosszú távra tervezhetően.
+                  Új lakás 3%, használt lakás 5%. Tervezhető otthonteremtés.
                 </h2>
 
                 <p className="mt-4 leading-7 text-neutral-300">
-                  Az Otthon Start kedvező kamatot adhat, de a jogosultság, a megfelelő ingatlan és a banki hitelbírálat együtt határozza meg, hogy a program valóban elérhető-e számodra.
+                  A Wekerle Plusz kedvezményes lakásszerzési kölcsöne 18–45 éves igénylőknek szól. A jogosultság, a választott ingatlan és a banki hitelbírálat együttesen határozza meg a lehetőségeidet.
                 </p>
 
                 <div className="mt-7 space-y-4">
                   {[
-                    "Fix 3%-os kamat a futamidő végéig",
+                    "Új lakásnál legfeljebb fix 3%, használt lakásnál legfeljebb fix 5%",
                     "Legfeljebb 50 millió Ft hitelösszeg",
-                    "Legfeljebb 25 éves futamidő",
+                    "18–45 éves igénylők számára, legfeljebb 25 évre",
                   ].map((item) => (
                     <div key={item} className="flex gap-3">
                       <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#dfd0b8]" />
@@ -197,15 +197,15 @@ export default function OtthonStartPage() {
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <span className="text-sm font-semibold uppercase tracking-[0.22em] text-[#8a7356]">
-              Első saját otthon
+              Lakásszerzési kölcsön
             </span>
 
             <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
-              Kinek szól az Otthon Start?
+              Kinek szól a Wekerle Plusz?
             </h2>
 
             <p className="mt-6 text-lg leading-8 text-neutral-600">
-              A program elsőlakás-vásárlóknak szól. A jogosultság mellett a bank a jövedelmet, a hitelképességet és a kiválasztott ingatlant is vizsgálja.
+              A program a 18–45 éves, első otthonukat megvásárolni vagy megépíteni kívánó igénylőknek szól. A bank a jövedelmet, a hitelképességet és az ingatlant is megvizsgálja.
             </p>
           </div>
 
@@ -213,13 +213,13 @@ export default function OtthonStartPage() {
             <InfoCard
               icon={<Home className="h-6 w-6" />}
               title="Első lakás"
-              text="Azoknak, akik első saját otthonukat szeretnék megvásárolni a program feltételei szerint."
+              text="Első otthon vásárlására vagy építésére, a jogszabályban meghatározott tulajdoni feltételekkel."
             />
 
             <InfoCard
               icon={<Banknote className="h-6 w-6" />}
-              title="Fix 3% kamat"
-              text="A kamat a futamidő végéig fix 3%, így a konstrukció hosszabb távon is jól tervezhető."
+              title="Fix 3% vagy 5%"
+              text="Új lakás vásárlásakor vagy építésekor legfeljebb évi 3%, használt lakásnál legfeljebb évi 5% a fix kamat."
             />
 
             <InfoCard
@@ -230,8 +230,8 @@ export default function OtthonStartPage() {
 
             <InfoCard
               icon={<HeartHandshake className="h-6 w-6" />}
-              title="Akár 10% önerő"
-              text="A program szabályai szerint akár 10% önerő mellett is megvalósulhat a vásárlás, ha a banki feltételek is teljesülnek."
+              title="18–45 éves kor"
+              text="Az igénylés 18 és 45 éves kor között lehetséges; a szükséges önerőt a hitelcél és a banki szabályok határozzák meg."
             />
           </div>
         </div>
@@ -250,7 +250,7 @@ export default function OtthonStartPage() {
             </h2>
 
             <p className="mt-6 text-lg leading-8 text-neutral-600">
-              A fix 3%-os kamat és a hosszú futamidő jelentősen javíthatja az első otthon finanszírozhatóságát. A tényleges lehetőséget azonban mindig a személyes pénzügyi helyzet és a választott ingatlan alapján kell meghatározni.
+              A különböző lakáscélokra meghatározott kedvezményes kamat és a legfeljebb 25 éves futamidő segítheti az első otthon finanszírozását. A tényleges lehetőséget a személyes pénzügyi helyzet és a választott ingatlan alapján vizsgáljuk.
             </p>
           </div>
 
@@ -258,7 +258,7 @@ export default function OtthonStartPage() {
             <Benefit
               icon={<ShieldCheck />}
               title="Fix kamat"
-              text="A 3%-os kamat a futamidő végéig fix, ami kiszámíthatóbb törlesztést tesz lehetővé."
+              text="A támogatott ügyfélkamat új lakásnál legfeljebb 3%, használt lakásnál legfeljebb 5% évente, a futamidő alatt fixen."
             />
 
             <Benefit
@@ -270,13 +270,13 @@ export default function OtthonStartPage() {
             <Benefit
               icon={<BadgeCheck />}
               title="Nincs családi feltétel"
-              text="A programhoz nincs házasságkötési vagy gyermekvállalási kötelezettség, és nincs felső korhatár."
+              text="Nincs házasságkötési vagy gyermekvállalási feltétel; az igénylők életkora 18–45 év."
             />
 
             <Benefit
               icon={<Sparkles />}
               title="Első saját otthon"
-              text="A program keretei azonosak, de a banki hitelbírálat, jövedelem-elfogadás és kiegészítő feltételek eltérhetnek."
+              text="Nem szükséges többéves TB-jogviszony; a banki hitelképességi és ingatlanfeltételek továbbra is érvényesek."
             />
           </div>
         </div>
@@ -292,14 +292,14 @@ export default function OtthonStartPage() {
               </div>
 
               <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
-                Otthon Start.
+                Wekerle Plusz.
                 <span className="block text-[#e5d7c3]">
-                  Egy nagy lépés az első otthon felé.
+                  Új lehetőség az első otthon felé.
                 </span>
               </h2>
 
               <p className="mt-6 max-w-xl text-lg leading-8 text-neutral-200">
-                A program szabályai adottak, de az egyes bankok hitelbírálata és ügyfélminősítése eltérhet. Ezért érdemes több bank lehetőségét is áttekinteni.
+                Az állami program feltételei mellett a bankok hitelbírálata, díjai és ügyfélminősítése eltérhetnek. Érdemes a rendelkezésre álló ajánlatokat összevetni.
               </p>
             </div>
 
@@ -308,7 +308,7 @@ export default function OtthonStartPage() {
                 <ComparisonRow
                   number="01"
                   title="Megismerjük az igényt"
-                  text="Megnézzük, hogy az elsőlakás-vásárlói feltételek és a személyes körülményeid alapján szóba jöhet-e a program."
+                  text="Megvizsgáljuk az életkort, a lakástulajdoni előzményeket és azt, hogy a választott hitelcél megfelelhet-e a programnak."
                 />
 
                 <ComparisonRow
@@ -344,7 +344,7 @@ export default function OtthonStartPage() {
             </span>
 
             <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
-              Az Otthon Start jogosultsága mindig egyedi
+              A Wekerle Plusz jogosultsága mindig egyedi
             </h2>
 
             <p className="mt-6 text-lg leading-8 text-neutral-600">
@@ -361,8 +361,8 @@ export default function OtthonStartPage() {
 
             <ConditionCard
               number="02"
-              title="TB-jogviszony és jövedelem"
-              text="Legalább kétéves magyarországi TB-jogviszony szükséges, és a bank a jövedelmet, valamint a meglévő havi kötelezettségeket is vizsgálja."
+              title="Jövedelem és hitelképesség"
+              text="A programhoz nem szükséges többéves TB-jogviszony, de a bank megvizsgálja az igazolt jövedelmet és a meglévő kötelezettségeket."
             />
 
             <ConditionCard
@@ -377,7 +377,7 @@ export default function OtthonStartPage() {
               <FileText className="mt-1 h-6 w-6 shrink-0 text-[#897154]" />
 
               <p className="leading-7 text-neutral-600">
-                Az oldalon szereplő információk tájékoztató jellegűek. A pontos jogosultságot, hitelösszeget és havi törlesztést az aktuális jogszabályi, banki és személyes feltételek alapján lehet meghatározni.
+                Az ingatlanban az első öt évben életvitelszerűen bent kell lakni, és a bérbeadás nem megengedett. Az oldalon szereplő információk tájékoztató jellegűek; a pontos jogosultságot, hitelösszeget és törlesztést az aktuális jogszabályi, banki és személyes feltételek határozzák meg.
               </p>
             </div>
           </div>
@@ -411,7 +411,7 @@ export default function OtthonStartPage() {
                   </div>
 
                   <h2 className="mt-5 max-w-md text-3xl font-semibold leading-tight text-white sm:text-4xl">
-                    Nézzük meg, elérhető-e számodra az Otthon Start.
+                    Nézzük meg, elérhető-e számodra a Wekerle Plusz.
                   </h2>
 
                   <p className="mt-4 max-w-md leading-7 text-white/85">
@@ -500,7 +500,7 @@ export default function OtthonStartPage() {
                       id="amount"
                       name="amount"
                       type="text"
-                      placeholder="Pl. 3 000 000 Ft"
+                      placeholder="Pl. 30 000 000 Ft"
                       className="w-full rounded-2xl border border-[#d9cdbd] bg-white px-4 py-3.5 outline-none transition focus:border-[#8e7658] focus:ring-2 focus:ring-[#8e7658]/10"
                     />
                   </div>
@@ -568,7 +568,7 @@ export default function OtthonStartPage() {
       {/* FOOTER NOTE */}
       <section className="bg-[#101010] px-6 py-8 text-neutral-500 lg:px-8">
         <div className="mx-auto max-w-7xl text-center text-xs leading-6">
-          A tájékoztatás nem minősül konkrét hitelajánlatnak. A finanszírozás
+          A Wekerle Plusz feltételeit a 298/2026. (X. 27.) Korm. rendelet szabályozza. A tájékoztatás nem minősül konkrét hitelajánlatnak. A finanszírozás
           feltételei minden esetben a választott pénzügyi intézmény aktuális
           szabályaitól és az egyedi hitelbírálattól függenek.
         </div>
