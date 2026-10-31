@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
 
@@ -11,126 +10,112 @@ const PAGE_IMAGES = Array.from(
   (_, index) => `/ezustevek/pages/${String(index + 1).padStart(2, "0")}.webp`
 );
 
+
+/**
+ * Reliable desktop spread reader. Uses the existing WebP pages directly,
+ * so a blocked external page-flip script cannot make the book disappear.
+ */
 function MagazineReader() {
-  const bookRef = useRef<HTMLDivElement | null>(null);
-  const pageFlipRef = useRef<any>(null);
-  const [flipReady, setFlipReady] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [fullscreen, setFullscreen] = useState(false);
-  const [bookKey, setBookKey] = useState(0);
+  const [spread, setSpread] = useState(0);
+  const [expanded, setExpanded] = useState(false);
+  const [zoom, setZoom] = useState(1);
+
+  const pages = spread === 0 ? [0] :
+    [spread, spread + 1].filter((index) => index < PAGE_IMAGES.length);
+  const label = spread === 0 ? "1" :
+    String(spread + 1) + (pages.length > 1 ? "–" + (spread + 2) : "");
+
+  const previous = () => {
+    setSpread((s) => s <= 1 ? 0 : s - 2);
+    setZoom(1);
+  };
+  const next = () => {
+    setSpread((s) => Math.min(PAGE_IMAGES.length - 1, s === 0 ? 1 : s + 2));
+    setZoom(1);
+  };
 
   useEffect(() => {
-    if (!flipReady || !bookRef.current || window.innerWidth < 1280) return;
-    const St = (window as any).St;
-    if (!St?.PageFlip) return;
-    const element = bookRef.current;
-    const pageWidth = window.innerWidth < 900 ? 320 : 520;
-    const flip = new St.PageFlip(element, {
-      width: pageWidth,
-      height: Math.round(pageWidth * 1.414),
-      size: "stretch",
-      minWidth: 260,
-      maxWidth: 590,
-      minHeight: 368,
-      maxHeight: 835,
-      showCover: true,
-      usePortrait: false,
-      autoSize: true,
-      drawShadow: true,
-      maxShadowOpacity: 0.35,
-      flippingTime: 900,
-      mobileScrollSupport: false,
-      startPage: currentPage,
-    });
-    flip.loadFromImages(PAGE_IMAGES);
-    flip.on("flip", (event: any) => setCurrentPage(event.data));
-    pageFlipRef.current = flip;
-    return () => {
-      if (pageFlipRef.current === flip) pageFlipRef.current = null;
-      try { flip.destroy(); } catch {}
-    };
-  }, [flipReady, bookKey]);
-
-  useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout>;
-    const onResize = () => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => setBookKey((key) => key + 1), 200);
-    };
-    window.addEventListener("resize", onResize);
-    return () => { clearTimeout(timeout); window.removeEventListener("resize", onResize); };
-  }, []);
-
-  useEffect(() => {
-    if (!fullscreen) return;
-    const previousOverflow = document.body.style.overflow;
+    if (!expanded) return;
+    const oldOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setFullscreen(false);
-      if (event.key === "ArrowRight") setCurrentPage((page) => Math.min(PAGE_IMAGES.length - 1, page + 1));
-      if (event.key === "ArrowLeft") setCurrentPage((page) => Math.max(0, page - 1));
+      if (event.key === "Escape") setExpanded(false);
+      if (event.key === "ArrowLeft") previous();
+      if (event.key === "ArrowRight") next();
     };
     window.addEventListener("keydown", onKeyDown);
     return () => {
-      document.body.style.overflow = previousOverflow;
+      document.body.style.overflow = oldOverflow;
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [fullscreen]);
+  }, [expanded]);
 
-  const closeFullscreen = () => {
-    setFullscreen(false);
-    try { pageFlipRef.current?.flip(currentPage); } catch {}
-  };
+  const spreadImages = (large: boolean) => (
+    <div className={large ? "mx-auto flex items-start justify-center" : "mx-auto flex w-full max-w-[1100px] items-center justify-center"}
+      style={large ? { width: (zoom * 100) + "%", minWidth: "100%" } : undefined}>
+      {pages.map((index) => (
+        <img
+          key={index}
+          src={PAGE_IMAGES[index]}
+          alt={`Ezüstévek – ${index + 1}. oldal`}
+          className={pages.length === 1 ? "block h-auto w-full max-w-[520px] bg-white shadow-md" : "block h-auto w-1/2 bg-white shadow-md"}
+          decoding="async"
+        />
+      ))}
+    </div>
+  );
 
   return (
     <>
-      <Script
-        src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"
-        strategy="afterInteractive"
-        onReady={() => setFlipReady(true)}
-      />
-      <div className="relative w-full">
+      <div className="w-full">
         <div className="relative flex min-h-[650px] items-center justify-center overflow-hidden rounded-[24px] bg-[#e4dbcf] px-14 py-5 shadow-[0_22px_60px_rgba(0,0,0,0.18)]">
-          {currentPage > 0 && (
-            <button type="button" onClick={() => pageFlipRef.current?.flipPrev()} aria-label="Előző oldal" className="absolute left-2 top-1/2 z-30 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#c7b18e] bg-[#fffaf2]/95 text-[32px] leading-none text-[#173b35] shadow-lg">‹</button>
-          )}
-          <div ref={bookRef} className="mx-auto" aria-label="Ezüstévek lapozható magazin" />
-          {currentPage < PAGE_IMAGES.length - 1 && (
-            <button type="button" onClick={() => pageFlipRef.current?.flipNext()} aria-label="Következő oldal" className="absolute right-2 top-1/2 z-30 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-[#173b35] text-[32px] leading-none text-white shadow-lg">›</button>
-          )}
+          {spreadImages(false)}
+          <button type="button" onClick={previous} disabled={spread === 0}
+            aria-label="Előző oldalak"
+            className="absolute left-2 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-[#c7b18e] bg-[#fffaf2] text-[30px] text-[#173b35] shadow-lg disabled:opacity-30">‹</button>
+          <button type="button" onClick={next} disabled={spread >= PAGE_IMAGES.length - 1}
+            aria-label="Következő oldalak"
+            className="absolute right-2 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-[#173b35] text-[30px] text-white shadow-lg disabled:opacity-30">›</button>
         </div>
         <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-[13px] text-[#75695e]">
-          <span>{currentPage + 1} / {PAGE_IMAGES.length}</span>
+          <span aria-live="polite">{label} / {PAGE_IMAGES.length}</span>
           <span>•</span>
-          <span>Az oldal széle egérrel is húzható</span>
+          <button type="button" onClick={() => { setZoom(1); setExpanded(true); }}
+            className="font-semibold text-[#173b35] underline underline-offset-4">Nagyítás / teljes képernyő</button>
           <span>•</span>
-          <button type="button" onClick={() => setFullscreen(true)} className="font-semibold text-[#173b35] underline underline-offset-4 hover:text-[#a16b2d]">Nagyítás / teljes képernyő</button>
-          <span>•</span>
-          <a href="/ezustevek/2026-november.pdf" target="_blank" rel="noreferrer" className="text-[#82613c] underline underline-offset-4 hover:text-[#173b35]">PDF</a>
+          <a href="/ezustevek/2026-november.pdf" target="_blank" rel="noreferrer"
+            className="text-[#82613c] underline underline-offset-4">PDF (opcionális)</a>
         </div>
       </div>
-      {fullscreen && (
-        <div role="dialog" aria-modal="true" aria-label="Ezüstévek nagyított olvasó" className="fixed inset-0 z-[9999] flex flex-col bg-[#171411]">
-          <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-5 py-3 text-white">
-            <div><p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#d4ad71]">Ezüstévek</p><p className="mt-1 text-[14px] text-white/70">2026. november</p></div>
-            <button type="button" onClick={closeFullscreen} className="rounded-full border border-white/20 px-5 py-2 text-[14px] font-semibold text-white hover:bg-white/10">Bezárás</button>
+      {expanded && (
+        <div role="dialog" aria-modal="true" aria-label="Ezüstévek nagyított olvasó"
+          className="fixed inset-0 z-[9999] flex flex-col bg-[#171411] text-white">
+          <div className="flex shrink-0 items-center justify-between border-b border-white/20 px-5 py-3">
+            <p>Ezüstévek – 2026. november · {label} / {PAGE_IMAGES.length}</p>
+            <button type="button" onClick={() => setExpanded(false)}
+              className="rounded-full border border-white/30 px-5 py-2 font-semibold">Bezárás</button>
           </div>
-          <div className="relative flex min-h-0 flex-1 items-center justify-center px-14 py-3">
-            {currentPage > 0 && <button type="button" onClick={() => setCurrentPage((page) => Math.max(0, page - 1))} aria-label="Előző oldal" className="absolute left-2 top-1/2 z-30 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-[36px] text-white">‹</button>}
-            <img src={PAGE_IMAGES[currentPage]} alt={`Ezüstévek – ${currentPage + 1}. oldal`} className="block max-h-full max-w-full object-contain shadow-2xl" style={{height: "100%", width: "auto"}} />
-            {currentPage < PAGE_IMAGES.length - 1 && <button type="button" onClick={() => setCurrentPage((page) => Math.min(PAGE_IMAGES.length - 1, page + 1))} aria-label="Következő oldal" className="absolute right-2 top-1/2 z-30 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-[36px] text-white">›</button>}
+          <div className="min-h-0 flex-1 overflow-auto">
+            {spreadImages(true)}
           </div>
-          <div className="flex shrink-0 items-center justify-center gap-5 border-t border-white/10 px-4 py-3 text-[13px] text-white/75">
-            <span>{currentPage + 1} / {PAGE_IMAGES.length}</span>
-            <span>•</span><span>Lapozás: nyilak vagy ← → billentyűk</span>
-            <span>•</span><a href="/ezustevek/2026-november.pdf" target="_blank" rel="noreferrer" className="underline">PDF</a>
+          <div className="flex shrink-0 items-center justify-between gap-3 border-t border-white/20 px-4 py-3">
+            <button type="button" onClick={previous} disabled={spread === 0}
+              className="rounded-full border border-white/30 px-4 py-2 disabled:opacity-30">‹ Előző</button>
+            <div className="flex items-center gap-2">
+              <button type="button" onClick={() => setZoom((z) => Math.max(1,z-0.5))} disabled={zoom===1}
+                aria-label="Kicsinyítés" className="rounded-full border border-white/30 px-4 py-2 disabled:opacity-30">−</button>
+              <span>{Math.round(zoom*100)}%</span>
+              <button type="button" onClick={() => setZoom((z) => Math.min(3,z+0.5))} disabled={zoom===3}
+                aria-label="Nagyítás" className="rounded-full border border-white/30 px-4 py-2 disabled:opacity-30">+</button>
+            </div>
+            <button type="button" onClick={next} disabled={spread >= PAGE_IMAGES.length - 1}
+              className="rounded-full bg-[#d5a54e] px-4 py-2 font-semibold text-[#171411] disabled:opacity-30">Következő ›</button>
           </div>
         </div>
       )}
     </>
   );
 }
-
 
 /**
  * Mobile reader intentionally does not depend on the external page-flip library.
