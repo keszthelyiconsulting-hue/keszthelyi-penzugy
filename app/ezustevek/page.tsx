@@ -25,14 +25,34 @@ function MagazineReader() {
   const label = spread === 0 ? "1" :
     String(spread + 1) + (pages.length > 1 ? "–" + (spread + 2) : "");
 
-  const previous = () => {
-    setSpread((s) => s <= 1 ? 0 : s - 2);
+  const preserveScroll = (changePage: () => void) => {
+  const currentScroll = window.scrollY;
+
+  changePage();
+
+  requestAnimationFrame(() => {
+    window.scrollTo({
+      top: currentScroll,
+      behavior: "instant",
+    });
+  });
+};
+
+const previous = () => {
+  preserveScroll(() => {
+    setSpread((s) => (s <= 1 ? 0 : s - 2));
     setZoom(1);
-  };
-  const next = () => {
-    setSpread((s) => Math.min(PAGE_IMAGES.length - 1, s === 0 ? 1 : s + 2));
+  });
+};
+
+const next = () => {
+  preserveScroll(() => {
+    setSpread((s) =>
+      Math.min(PAGE_IMAGES.length - 1, s === 0 ? 1 : s + 2)
+    );
     setZoom(1);
-  };
+  });
+};
 
   useEffect(() => {
     if (!expanded) return;
