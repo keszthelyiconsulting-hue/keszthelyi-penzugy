@@ -88,7 +88,7 @@ const next = () => {
   return (
     <>
       <div className="w-full">
-        <div className="relative flex h-[700px] items-center justify-center overflow-hidden rounded-[24px] bg-[#e4dbcf] px-14 py-5 shadow-[0_22px_60px_rgba(0,0,0,0.18)]">
+        <div className="relative flex min-h-[650px] items-center justify-center rounded-[24px] bg-[#e4dbcf] px-14 py-5 shadow-[0_22px_60px_rgba(0,0,0,0.18)]">
           {spreadImages(false)}
           <button type="button" onClick={previous} disabled={spread === 0}
             aria-label="Előző oldalak"
