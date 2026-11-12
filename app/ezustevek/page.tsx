@@ -25,34 +25,14 @@ function MagazineReader() {
   const label = spread === 0 ? "1" :
     String(spread + 1) + (pages.length > 1 ? "–" + (spread + 2) : "");
 
-  const preserveScroll = (changePage: () => void) => {
-  const currentScroll = window.scrollY;
-
-  changePage();
-
-  requestAnimationFrame(() => {
-    window.scrollTo({
-      top: currentScroll,
-      behavior: "instant",
-    });
-  });
-};
-
-const previous = () => {
-  preserveScroll(() => {
-    setSpread((s) => (s <= 1 ? 0 : s - 2));
+  const previous = () => {
+    setSpread((s) => s <= 1 ? 0 : s - 2);
     setZoom(1);
-  });
-};
-
-const next = () => {
-  preserveScroll(() => {
-    setSpread((s) =>
-      Math.min(PAGE_IMAGES.length - 1, s === 0 ? 1 : s + 2)
-    );
+  };
+  const next = () => {
+    setSpread((s) => Math.min(PAGE_IMAGES.length - 1, s === 0 ? 1 : s + 2));
     setZoom(1);
-  });
-};
+  };
 
   useEffect(() => {
     if (!expanded) return;
@@ -78,10 +58,7 @@ const next = () => {
           key={index}
           src={PAGE_IMAGES[index]}
           alt={`Ezüstévek – ${index + 1}. oldal`}
-          className={pages.length === 1
-  ? "block h-auto max-h-[75vh] w-auto max-w-full object-contain bg-white shadow-md"
-  : "block h-auto max-h-[75vh] w-auto max-w-1/2 object-contain bg-white shadow-md"
-}
+          className={pages.length === 1 ? "block h-auto w-full max-w-[520px] bg-white shadow-md" : "block h-auto w-1/2 bg-white shadow-md"}
           decoding="async"
         />
       ))}
@@ -91,7 +68,7 @@ const next = () => {
   return (
     <>
       <div className="w-full">
-        <div className="relative flex min-h-[650px] items-center justify-center rounded-[24px] bg-[#e4dbcf] px-14 py-5 shadow-[0_22px_60px_rgba(0,0,0,0.18)]">
+        <div className="relative flex min-h-[650px] items-center justify-center overflow-hidden rounded-[24px] bg-[#e4dbcf] px-14 py-5 shadow-[0_22px_60px_rgba(0,0,0,0.18)]">
           {spreadImages(false)}
           <button type="button" onClick={previous} disabled={spread === 0}
             aria-label="Előző oldalak"
