@@ -78,7 +78,10 @@ const next = () => {
           key={index}
           src={PAGE_IMAGES[index]}
           alt={`Ezüstévek – ${index + 1}. oldal`}
-          className={pages.length === 1 ? "block h-auto w-full max-w-[520px] bg-white shadow-md" : "block h-auto w-1/2 bg-white shadow-md"}
+          className={pages.length === 1
+  ? "block h-auto max-h-[75vh] w-auto max-w-full object-contain bg-white shadow-md"
+  : "block h-auto max-h-[75vh] w-auto max-w-1/2 object-contain bg-white shadow-md"
+}
           decoding="async"
         />
       ))}
