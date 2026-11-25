@@ -1,0 +1,99 @@
+name: Rebuild December Sziporka with exact magazine artwork
+
+on:
+  push:
+    paths:
+      - ".github/workflows/rebuild-sziporka-december-exact.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install image libraries
+        run: python -m pip install --disable-pip-version-check pymupdf pillow opencv-python-headless
+      - name: Reconstruct exact printed December cover and editorial from original PDF
+        run: |
+          git show 79f0f0d37f8661122d005e7918a50230184ea4b9:public/ezustevek/sziporka-december.webp > /tmp/sziporka-original.webp
+          python - <<'PY'
+          from io import BytesIO
+          from pathlib import Path
+          import cv2, fitz, numpy as np
+          from PIL import Image
+
+          # Preserve the original portrait, not the previously composited one.
+          src = Image.open('/tmp/sziporka-original.webp').convert('RGB')
+          src = src.resize((1086,1448),Image.Resampling.LANCZOS)
+          original = cv2.cvtColor(np.array(src),cv2.COLOR_RGB2BGR)
+          result = original.copy()
+          h_img,w_img = original.shape[:2]
+
+          pdf = fitz.open('public/ezustevek/2026-december.pdf')
+          assert len(pdf) == 42
+
+          # Left: unchanged PDF page 2 (Ajánló with real editorial portrait).
+          # Right: unchanged PDF page 1 (real December cover and exact senior-couple pose).
+          quadrilaterals = [
+            (1, [[111,553],[340,567],[441,957],[111,810]]),
+            (0, [[340,561],[792,459],[792,915],[438,961]]),
+          ]
+          for page_idx,corners in quadrilaterals:
+            bitmap=pdf[page_idx].get_pixmap(matrix=fitz.Matrix(2,2),alpha=False)
+            page=cv2.imdecode(np.frombuffer(bitmap.tobytes('png'),np.uint8),cv2.IMREAD_COLOR)
+            y,x=page.shape[:2]
+            transform=cv2.getPerspectiveTransform(
+              np.float32([[0,0],[x-1,0],[x-1,y-1],[0,y-1]]),
+              np.float32(corners))
+            warp=cv2.warpPerspective(page,transform,(w_img,h_img),flags=cv2.INTER_LANCZOS4)
+            mask=cv2.warpPerspective(np.full((y,x),255,np.uint8),transform,(w_img,h_img))
+            mask=cv2.GaussianBlur(mask,(3,3),0.5)
+            opacity=mask.astype(np.float32)[:,:,None]/255
+            result=(warp*opacity+result*(1-opacity)).astype(np.uint8)
+
+          # Reintroduce only real hand/finger pixels, excluding golden autumn leaves.
+          polygons=[
+            [[132,701],[154,687],[192,681],[223,686],[248,693],[261,701],[262,713],[249,719],[225,717],[187,707],[152,707]],
+            [[122,714],[141,703],[171,706],[212,712],[256,721],[274,732],[272,743],[261,748],[224,742],[165,731],[129,730]],
+            [[119,733],[142,724],[170,729],[214,738],[259,747],[276,756],[269,768],[249,771],[212,761],[172,747],[126,748]],
+            [[123,750],[141,744],[169,750],[205,762],[244,774],[252,783],[241,791],[216,799],[186,806],[158,794],[137,780]],
+            [[703,737],[716,722],[735,716],[755,712],[776,714],[802,716],[826,725],[841,736],[848,752],[844,771],[831,789],[812,800],[785,805],[761,806],[739,800],[722,786],[712,772],[703,756]],
+          ]
+          allowed=np.zeros((h_img,w_img),np.uint8)
+          cv2.fillPoly(allowed,[np.array(p,np.int32) for p in polygons],255)
+          ycb=cv2.cvtColor(original,cv2.COLOR_BGR2YCrCb)
+          hsv=cv2.cvtColor(original,cv2.COLOR_BGR2HSV)
+          skin=((ycb[:,:,1]>135)&(ycb[:,:,1]<177)&
+                (ycb[:,:,2]>88)&(ycb[:,:,2]<133)&
+                (hsv[:,:,0]<=11)&(hsv[:,:,1]<=180))
+          allowed=cv2.bitwise_and(allowed,skin.astype('uint8')*255)
+          allowed=cv2.morphologyEx(allowed,cv2.MORPH_CLOSE,np.ones((5,5),np.uint8))
+          allowed=cv2.GaussianBlur(allowed,(5,5),.7)
+          opacity=allowed.astype(np.float32)[:,:,None]/255
+          result=(result*(1-opacity)+original*opacity).astype(np.uint8)
+
+          target=Path('public/ezustevek/sziporka-december.webp')
+          picture=Image.fromarray(cv2.cvtColor(result,cv2.COLOR_BGR2RGB))
+          picture.resize((750,1000),Image.Resampling.LANCZOS).save(target,'WEBP',quality=86,method=6)
+          with Image.open(target) as verification:
+            verification.verify()
+          print('Replaced winter portrait',target.stat().st_size,'bytes')
+          PY
+      - name: Save corrected website image
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/ezustevek/sziporka-december.webp
+          if ! git diff --cached --quiet; then
+            git commit -m "Use exact December PDF cover and Ajánló on Sziporka photo"
+            git pull --rebase
+            git push
+          fi
