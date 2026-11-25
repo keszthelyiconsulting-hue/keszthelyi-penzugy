@@ -1,0 +1,48 @@
+name: Ezüstévek decemberi borítókép
+
+on:
+  push:
+    paths:
+      - ".github/workflows/ezustevek-december-cover.yml"
+      - "public/ezustevek/2026-december.pdf"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  create-cover:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout website
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install image renderer
+        run: python -m pip install --disable-pip-version-check pymupdf pillow
+      - name: Render the actual first PDF page
+        run: |
+          python - <<'PY'
+          import fitz
+          from io import BytesIO
+          from PIL import Image
+
+          doc = fitz.open("public/ezustevek/2026-december.pdf")
+          first = doc[0]
+          scale = 440 / first.rect.width
+          pixels = first.get_pixmap(matrix=fitz.Matrix(scale, scale), alpha=False)
+          image = Image.open(BytesIO(pixels.tobytes("png"))).convert("RGB")
+          image.save("public/ezustevek/2026-december-borito.jpg", "JPEG", quality=82, optimize=True)
+          print(f"Cover generated from page 1 ({image.width}×{image.height})")
+          PY
+      - name: Commit generated cover only when needed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/ezustevek/2026-december-borito.jpg
+          if ! git diff --cached --quiet; then
+            git commit -m "Generate real cover preview for December Ezüstévek"
+            git push
+          fi
