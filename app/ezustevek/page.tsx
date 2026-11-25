@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Footer from "../components/Footer";
+import DecemberReader from "./DecemberReader";
 
 const PAGE_IMAGES = Array.from(
   { length: 34 },
@@ -269,6 +270,7 @@ function MobileMagazineReader() {
 }
 
 export default function EzustevekPage() {
+  const [issue, setIssue] = useState<"november" | "december">("december");
   const [shareOpen, setShareOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
   const [visitCount, setVisitCount] = useState<number | null>(null);
@@ -290,8 +292,8 @@ export default function EzustevekPage() {
       ? window.location.href
       : "https://www.keszthelyiconsulting.com/ezustevek";
 
-  const shareTitle = "Ezüstévek – 2026. november";
-  const shareText = "Lapozd bele az Ezüstévek 2026. novemberi számába!";
+  const shareTitle = `Ezüstévek – 2026. ${issue}`;
+  const shareText = `Lapozz bele az Ezüstévek 2026. ${issue === "december" ? "decemberi" : "novemberi"} számába!`;
 
   const copyShareLink = async () => {
     try {
@@ -384,12 +386,16 @@ export default function EzustevekPage() {
           <div className="grid items-center gap-7 md:grid-cols-[minmax(0,250px)_minmax(0,1fr)] md:gap-10 lg:gap-14">
             <div className="flex justify-center md:justify-start">
             <div className="relative w-full max-w-[210px]">
-              <Image
-                src="/ezustevek/Őszi olvasás az Ezüstévekkel.png"
-                alt="Sziporka az Ezüstévek magazint olvassa"
+              <img
+                src={issue === "december" ? "/ezustevek/sziporka-december.webp" : "/ezustevek/Őszi olvasás az Ezüstévekkel.png"}
+                onError={(event) => {
+                  if (!event.currentTarget.src.includes("Őszi")) {
+                    event.currentTarget.src = "/ezustevek/Őszi olvasás az Ezüstévekkel.png";
+                  }
+                }}
+                alt={issue === "december" ? "Sziporka meleg téli ruhában, havas környezetben, a decemberi Ezüstévek magazinnal" : "Sziporka a novemberi Ezüstévek magazint olvassa"}
                 width={820}
                 height={1100}
-                priority
                 className="h-auto w-full object-contain"
               />
 
@@ -502,9 +508,15 @@ export default function EzustevekPage() {
           </div>
         </div>
 
-        <div className="w-full min-w-0">
-          <MobileMagazineReader />
-          <div className="hidden xl:block"><MagazineReader /></div>
+        <div className="w-full min-w-0" id="ezustevek-magazin-olvaso">
+          {issue === "december" ? (
+            <DecemberReader />
+          ) : (
+            <>
+              <MobileMagazineReader />
+              <div className="hidden xl:block"><MagazineReader /></div>
+            </>
+          )}
         </div>
 
         {/* ISSN */}
@@ -513,9 +525,9 @@ export default function EzustevekPage() {
             HU ISSN 3141-8589
           </span>
           <span>•</span>
-          <span>2026. november</span>
+          <span>{issue === "december" ? "2026. december" : "2026. november"}</span>
           <span>•</span>
-          <span>1. évfolyam • 1. szám</span>
+          <span>1. évfolyam • {issue === "december" ? "2." : "1."} szám</span>
         </div>
 
         {/* LÁTOGATOTTSÁG AZ ISSN ALATT */}
@@ -567,12 +579,10 @@ export default function EzustevekPage() {
             </Link>
             <button
               type="button"
-              onClick={() =>
-                window.scrollTo({
-                  top: 0,
-                  behavior: "smooth",
-                })
-              }
+              onClick={() => {
+                setIssue("november");
+                document.getElementById("ezustevek-magazin-olvaso")?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
               className="group block w-[175px] text-left"
             >
               <div className="rounded-[15px] border border-[#dbcab7] bg-white p-3 shadow-sm transition group-hover:-translate-y-1 group-hover:shadow-lg">
