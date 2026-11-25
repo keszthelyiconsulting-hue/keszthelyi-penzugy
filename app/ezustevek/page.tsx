@@ -393,10 +393,10 @@ export default function EzustevekPage() {
             <div className="flex justify-center md:justify-start">
             <div className="relative w-full max-w-[210px]">
               <img
-                src={issue === "december" ? "/ezustevek/sziporka-december.webp" : "/ezustevek/Őszi olvasás az Ezüstévekkel.png"}
+                src={issue === "december" ? "/ezustevek/sziporka-december-vegleges.webp" : "/ezustevek/Őszi olvasás az Ezüstévekkel.png"}
                 onError={(event) => {
                   const image = event.currentTarget;
-                  const rawBackup = "https://raw.githubusercontent.com/keszthelyiconsulting-hue/keszthelyi-penzugy/main/public/ezustevek/sziporka-december.webp";
+                  const rawBackup = "https://raw.githubusercontent.com/keszthelyiconsulting-hue/keszthelyi-penzugy/main/public/ezustevek/sziporka-december-vegleges.webp";
                   if (issue === "december" && !image.src.includes("raw.githubusercontent.com")) {
                     image.src = rawBackup;
                   } else if (!image.src.includes("2026-november-borito.png")) {
