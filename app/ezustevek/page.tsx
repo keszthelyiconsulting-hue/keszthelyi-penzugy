@@ -541,6 +541,7 @@ export default function EzustevekPage() {
           </h2>
 
           <div className="mt-7 flex flex-wrap gap-5">
+            <Link href="/ezustevek/2026-december" className="rounded-xl border border-[#dbcab7] bg-white p-5 font-semibold text-[#173b35] shadow-sm hover:bg-[#fffaf3]">2026. december · 2. szám · 42 oldal · Lapozható magazin</Link>
             <button
               type="button"
               onClick={() =>
