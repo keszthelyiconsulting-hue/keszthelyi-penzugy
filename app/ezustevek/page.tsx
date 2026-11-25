@@ -541,7 +541,30 @@ export default function EzustevekPage() {
           </h2>
 
           <div className="mt-7 flex flex-wrap gap-5">
-            <Link href="/ezustevek/2026-december" className="rounded-xl border border-[#dbcab7] bg-white p-5 font-semibold text-[#173b35] shadow-sm hover:bg-[#fffaf3]">2026. december · 2. szám · 42 oldal · Lapozható magazin</Link>
+            <Link href="/ezustevek/2026-december" className="group block w-[175px] text-left">
+              <div className="rounded-[15px] border border-[#dbcab7] bg-white p-3 shadow-sm transition group-hover:-translate-y-1 group-hover:shadow-lg">
+                <div className="relative aspect-[220/310] overflow-hidden rounded-[8px] bg-gradient-to-b from-[#800f24] via-[#aa3142] to-[#173b35]">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center px-3 text-center text-white">
+                    <span className="font-serif text-xl font-bold tracking-wide">EZÜSTÉVEK</span>
+                    <span className="my-5 text-3xl">❄</span>
+                    <span className="font-serif text-xl font-semibold">Ünnepre hangolva</span>
+                    <span className="mt-3 text-xs">2026. december</span>
+                  </div>
+                  <img
+                    src="/ezustevek/2026-december-borito.jpg"
+                    alt="Ezüstévek – 2026. december címlapja"
+                    loading="lazy"
+                    onError={(event) => { event.currentTarget.style.display = "none"; }}
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                </div>
+                <div className="px-1 pb-1 pt-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#a16b2d]">2. szám</p>
+                  <p className="mt-1 text-[16px] font-bold text-[#173b35]">2026. december</p>
+                  <p className="mt-2 text-[13px] font-medium text-[#8f2630]">Lapozható magazin</p>
+                </div>
+              </div>
+            </Link>
             <button
               type="button"
               onClick={() =>
