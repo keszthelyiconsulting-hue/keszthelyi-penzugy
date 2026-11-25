@@ -360,18 +360,24 @@ export default function EzustevekPage() {
             </Link>
           </div>
 
-          {/* SZÖVEGES EZÜSTÉVEK LOGÓ – NEM KÉP */}
-          <div className="justify-self-center text-center" aria-label="Ezüstévek – Aktív évek. Teljes élet.">
+          {/* MAGAZIN EGYSÉGES FEJLÉCE: klasszikus fehér EZÜSTÉVEK */}
+          <div className="justify-self-center text-center" aria-label="EZÜSTÉVEK – Aktív évek. Teljes élet.">
             <div
-              className="whitespace-nowrap text-[clamp(29px,4.2vw,58px)] font-bold italic leading-[1.05] tracking-[-0.055em]"
+              className="whitespace-nowrap text-[clamp(27px,4vw,54px)] font-normal not-italic leading-[1.07] tracking-[-0.015em] text-white"
               style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
             >
-              <span className="text-[#b9d0b4]">Ezüst</span><span className="text-[#d5a54e]">évek</span>
-              <span className="ml-1 inline-block align-top text-[0.45em] not-italic text-[#d5a54e]">❧</span>
+              EZÜSTÉVEK
             </div>
-            <p className="mt-1 text-[clamp(9px,1vw,13px)] font-medium italic tracking-[0.08em] text-[#e3c48b]">
-              Aktív évek. Teljes élet.
-            </p>
+            <div className="mt-1 flex items-center justify-center gap-2 text-white">
+              <span aria-hidden="true" className="h-px w-4 bg-white/80 sm:w-8" />
+              <p
+                className="whitespace-nowrap text-[clamp(10px,1.2vw,16px)] font-normal italic tracking-[0.015em] text-white"
+                style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
+              >
+                Aktív évek. Teljes élet.
+              </p>
+              <span aria-hidden="true" className="h-px w-4 bg-white/80 sm:w-8" />
+            </div>
           </div>
 
           <div aria-hidden="true" />
