@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type TouchEvent } from "react";
 
 const COUNT = 42;
 const PAGE_IMAGES = Array.from(
@@ -142,7 +142,7 @@ function DesktopBook() {
           </div>
         </div>
       )}
-      <style jsx>{`
+      <style jsx global>{`
         @keyframes ezustevek-page-next {
           0% { transform: rotateY(0deg); filter: brightness(1); }
           50% { filter: brightness(.78); }
@@ -188,11 +188,11 @@ function MobileBook() {
     };
   }, [expanded, page]);
 
-  const startSwipe = (event: React.TouchEvent<HTMLDivElement>) => {
+  const startSwipe = (event: TouchEvent<HTMLDivElement>) => {
     if (event.touches.length !== 1) return;
     swipe.current = { x: event.touches[0].clientX, y: event.touches[0].clientY };
   };
-  const finishSwipe = (event: React.TouchEvent<HTMLDivElement>) => {
+  const finishSwipe = (event: TouchEvent<HTMLDivElement>) => {
     const start = swipe.current;
     swipe.current = null;
     if (!start || event.changedTouches.length !== 1 || zoom > 1) return;
@@ -255,7 +255,7 @@ function MobileBook() {
           </div>
         </div>
       )}
-      <style jsx>{`
+      <style jsx global>{`
         @keyframes ezustevek-enter-right {
           0% { opacity: .5; transform: translateX(16px) rotateY(-8deg); }
           100% { opacity: 1; transform: translateX(0) rotateY(0); }
