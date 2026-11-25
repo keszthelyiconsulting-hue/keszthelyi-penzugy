@@ -1,0 +1,81 @@
+name: Correct Sziporka magazine to December issue
+
+on:
+  push:
+    paths:
+      - ".github/workflows/fix-sziporka-december.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-photo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install PDF and image packages
+        run: python -m pip install --disable-pip-version-check pymupdf pillow opencv-python-headless
+      - name: Replace the magazine pages with exact December PDF artwork
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from io import BytesIO
+          import fitz
+          import cv2
+          import numpy as np
+          from PIL import Image
+
+          mag = fitz.open("public/ezustevek/2026-december.pdf")
+          assert len(mag) == 42, len(mag)
+          existing = Path("public/ezustevek/sziporka-december.webp")
+          base = np.array(Image.open(existing).convert("RGB").resize((1086, 1448), Image.Resampling.LANCZOS))[:,:,::-1].copy()
+
+          for pageno,corners in (
+              (1,[[118,555],[355,573],[459,933],[200,814]]),
+              (0,[[355,560],[775,478],[763,897],[456,948]]),
+          ):
+              pix = mag[pageno].get_pixmap(matrix=fitz.Matrix(1.5,1.5),alpha=False)
+              artwork = cv2.imdecode(np.frombuffer(pix.tobytes("png"), np.uint8), cv2.IMREAD_COLOR)
+              h,w = artwork.shape[:2]
+              transform = cv2.getPerspectiveTransform(
+                  np.float32([[0,0],[w-1,0],[w-1,h-1],[0,h-1]]),
+                  np.float32(corners))
+              warped = cv2.warpPerspective(artwork, transform, (1086,1448))
+              mask = cv2.warpPerspective(np.ones((h,w),np.uint8)*255,transform,(1086,1448))
+              mask = cv2.GaussianBlur(mask,(3,3),0.7)
+              handmask = np.zeros(mask.shape,np.uint8)
+              if pageno == 1:
+                  cv2.ellipse(handmask,(208,773),(95,62),-6,0,360,255,-1,cv2.LINE_AA)
+              else:
+                  cv2.ellipse(handmask,(779,769),(74,56),-15,0,360,255,-1,cv2.LINE_AA)
+              ycrcb = cv2.cvtColor(base, cv2.COLOR_BGR2YCrCb)
+              skin = ((ycrcb[:,:,1]>132)&(ycrcb[:,:,1]<183)&(ycrcb[:,:,2]>78)&(ycrcb[:,:,2]<141)).astype(np.uint8)*255
+              handmask = cv2.bitwise_and(handmask,skin)
+              handmask = cv2.dilate(handmask,np.ones((5,5),np.uint8),iterations=2)
+              handmask = cv2.GaussianBlur(handmask,(11,11),2)
+              mask = (mask.astype(np.float32)*(1-handmask.astype(np.float32)/255)).astype(np.uint8)
+              alpha = (mask.astype(np.float32)/255)[:,:,None]
+              tone = 0.96 if pageno == 1 else 0.98
+              base = (warped.astype(np.float32)*tone*alpha + base.astype(np.float32)*(1-alpha)).clip(0,255).astype(np.uint8)
+
+          result = Image.fromarray(cv2.cvtColor(base,cv2.COLOR_BGR2RGB))
+          result = result.resize((750,1000),Image.Resampling.LANCZOS)
+          result.save(existing,"WEBP",quality=85,method=6)
+          with Image.open(existing) as confirm:
+              confirm.verify()
+          print("Updated December Sziporka portrait:", existing.stat().st_size, "bytes")
+          PY
+      - name: Commit corrected portrait
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/ezustevek/sziporka-december.webp
+          if ! git diff --cached --quiet; then
+            git commit -m "Correct Sziporka photo to show actual December magazine"
+            git pull --rebase
+            git push
+          fi
