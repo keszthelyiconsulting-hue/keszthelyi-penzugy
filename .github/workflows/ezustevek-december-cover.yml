@@ -1,4 +1,4 @@
-name: Ezüstévek decemberi borítókép
+name: Ezüstévek December book pages
 
 on:
   push:
@@ -11,38 +11,52 @@ permissions:
   contents: write
 
 jobs:
-  create-cover:
+  generate-pages:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout website
-        uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install image renderer
+      - name: Install PDF and image tools
         run: python -m pip install --disable-pip-version-check pymupdf pillow
-      - name: Render the actual first PDF page
+      - name: Create 42 WebP pages and December cover
         run: |
           python - <<'PY'
           import fitz
           from io import BytesIO
+          from pathlib import Path
           from PIL import Image
 
-          doc = fitz.open("public/ezustevek/2026-december.pdf")
-          first = doc[0]
-          scale = 440 / first.rect.width
-          pixels = first.get_pixmap(matrix=fitz.Matrix(scale, scale), alpha=False)
-          image = Image.open(BytesIO(pixels.tobytes("png"))).convert("RGB")
-          image.save("public/ezustevek/2026-december-borito.jpg", "JPEG", quality=82, optimize=True)
-          print(f"Cover generated from page 1 ({image.width}×{image.height})")
+          source = Path("public/ezustevek/2026-december.pdf")
+          output = Path("public/ezustevek/2026-december-pages")
+          output.mkdir(parents=True, exist_ok=True)
+          doc = fitz.open(source)
+          if len(doc) != 42:
+              raise RuntimeError(f"Expected 42 pages, got {len(doc)}")
+          for page_index, page in enumerate(doc, start=1):
+              scale = 1440 / page.rect.width
+              bitmap = page.get_pixmap(matrix=fitz.Matrix(scale, scale), colorspace=fitz.csRGB, alpha=False)
+              im = Image.frombytes("RGB", (bitmap.width, bitmap.height), bitmap.samples)
+              file = output / f"{page_index:02}.webp"
+              im.save(file, "WEBP", quality=83, method=5)
+              with Image.open(file) as verification:
+                  verification.verify()
+              print(f"Generated {file}: {file.stat().st_size} bytes")
+              if page_index == 1:
+                  preview = im.copy()
+                  preview.thumbnail((440, 622), Image.Resampling.LANCZOS)
+                  preview.save("public/ezustevek/2026-december-borito.jpg", "JPEG", quality=82, optimize=True)
+          if len(list(output.glob("*.webp"))) != 42:
+              raise RuntimeError("Incomplete magazine image set")
           PY
-      - name: Commit generated cover only when needed
+      - name: Publish rendered pages to repository
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/ezustevek/2026-december-borito.jpg
+          git add public/ezustevek/2026-december-pages public/ezustevek/2026-december-borito.jpg
           if ! git diff --cached --quiet; then
-            git commit -m "Generate real cover preview for December Ezüstévek"
+            git commit -m "Add December Ezüstévek magazine page images"
+            git pull --rebase
             git push
           fi
