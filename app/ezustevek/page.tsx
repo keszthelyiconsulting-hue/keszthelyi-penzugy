@@ -389,8 +389,13 @@ export default function EzustevekPage() {
               <img
                 src={issue === "december" ? "/ezustevek/sziporka-december.webp" : "/ezustevek/Őszi olvasás az Ezüstévekkel.png"}
                 onError={(event) => {
-                  if (!event.currentTarget.src.includes("Őszi")) {
-                    event.currentTarget.src = "/ezustevek/Őszi olvasás az Ezüstévekkel.png";
+                  const image = event.currentTarget;
+                  const rawBackup = "https://raw.githubusercontent.com/keszthelyiconsulting-hue/keszthelyi-penzugy/main/public/ezustevek/sziporka-december.webp";
+                  if (issue === "december" && !image.src.includes("raw.githubusercontent.com")) {
+                    image.src = rawBackup;
+                  } else if (!image.src.includes("2026-november-borito.png")) {
+                    image.onerror = null;
+                    image.src = "/ezustevek/2026-november-borito.png";
                   }
                 }}
                 alt={issue === "december" ? "Sziporka meleg téli ruhában, havas környezetben, a decemberi Ezüstévek magazinnal" : "Sziporka a novemberi Ezüstévek magazint olvassa"}
